@@ -86,7 +86,7 @@ export default function Navbar() {
                 Portal Chiriași
               </a>
               <a
-                href="/src/pages/agent/AgentPortal.jsx"
+                href="/src/components/AgentPortal.jsx"
                 className={`px-4 py-2 rounded-md border transition-colors ${
                   isScrolled
                     ? 'border-brand-orange text-brand-orange hover:bg-brand-orange/10'
