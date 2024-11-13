@@ -1,12 +1,15 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
 export default defineConfig({
-  base: '/11/',
+  base: './', 
   plugins: [react()],
   build: {
     rollupOptions: {
-      output: {
+      external: ['../../pages/agent/AgentPortal'],
+            output: {
         assetFileNames: 'assets/images/[name].[ext]',
         chunkFileNames: 'assets/images/[name]-[hash].js',
         entryFileNames: 'assets/images/[name]-[hash].js'

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import logo from '../assets/images/logo.png';
-import AgentPortal from '../../pages/agent/AgentPortal';
+import AgentPortal from '../../pages/agent/AgentPortal.jsx';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
