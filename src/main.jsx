@@ -5,6 +5,10 @@ import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter basename={import.meta.env}>
+    <Routes>
+      <Route path="*" element={<App />} />
+    </Routes>
+    </BrowserRouter>
   </React.StrictMode>,
 )
