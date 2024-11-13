@@ -1,23 +1,37 @@
-# ApartamentDeLux Website
+# ApartamentDeLux.ro
 
-Modern real estate website built with React and Tailwind CSS.
+## Structură proiect
+```
+src/
+├── assets/
+│   └── images/
+│       └── properties/
+│           ├── a25/
+│           │   ├── living/
+│           │   ├── bedroom/
+│           │   └── ...
+│           └── ...
+├── components/
+├── data/
+└── ...
+```
 
-## Setup
+## Adăugare imagini
+1. Adaugă imaginile în directorul corespunzător apartamentului și categoriei:
+   ```
+   src/assets/images/properties/[id-apartament]/[categorie]/
+   ```
+2. Imaginile vor fi automat importate și categorizate
 
-1. Clone the repository
-2. Run `npm install`
-3. Run `npm run dev` to start development server
+## Adăugare apartament nou
+1. Adaugă datele apartamentului în `src/data/properties.js`
+2. Creează directorul pentru imagini:
+   ```
+   mkdir -p src/assets/images/properties/[id-apartament]/{living,bedroom,kitchen,bathroom,balcony,view,other}
+   ```
+3. Adaugă imaginile în directoarele corespunzătoare
 
-## Available Scripts
-
-- `npm run dev`: Start development server
-- `npm run build`: Build for production
-- `npm run preview`: Preview production build
-
-## Technologies Used
-
-- React
-- Tailwind CSS
-- Vite
-- Headless UI
-- Lucide React
+## Dezvoltare
+```bash
+npm run dev
+```
