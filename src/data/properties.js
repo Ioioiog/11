@@ -11,7 +11,7 @@ export const propertyData = [
     id: "a25",
     title: "Apartament A.2.5 - Yacht Kid",
     description: "Apartament spațios în complexul Yacht Kid, cu 3 camere și balcon generos de 37.1 mp. Ideal pentru familii, oferind un living confortabil și două dormitoare.",
-    price: 1400,
+    price: 1500,
     details: {
       rooms: 3,
       area: 71.4,
