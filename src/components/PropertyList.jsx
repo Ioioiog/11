@@ -1,82 +1,326 @@
-import React, { useState } from 'react';
-import { propertyData } from '../data/properties';
+// src/components/PropertyList.jsx
 
-export default function PropertyList({ onPropertySelect }) {
+import React, { useState, useMemo } from 'react';
+import { Search, SlidersHorizontal, X } from 'lucide-react';
+import { propertyData, filterOptions, propertyStatuses } from '../data/properties';
+import PropertyModal from './PropertyModal';
+import PropertyGallery from './PropertyGallery';
+
+export default function PropertyList() {
+  const [selectedProperty, setSelectedProperty] = useState(null);
+  const [showGallery, setShowGallery] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
+    status: 'all',
     rooms: 'all',
+    complex: 'all',
     priceRange: 'all'
   });
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredProperties = propertyData.filter(property => {
-    if (filters.rooms !== 'all' && property.details.rooms !== parseInt(filters.rooms)) return false;
-    if (filters.priceRange !== 'all') {
-      const [min, max] = filters.priceRange.split('-').map(Number);
-      if (property.price < min || property.price > max) return false;
-    }
-    return true;
-  });
+  const filteredProperties = useMemo(() => {
+    return propertyData.filter(property => {
+      // Filtrare după termen de căutare
+      if (searchTerm && !property.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
+          !property.description.toLowerCase().includes(searchTerm.toLowerCase())) {
+        return false;
+      }
+
+      // Filtrare după status
+      if (filters.status !== 'all' && property.status !== filters.status) {
+        return false;
+      }
+
+      // Filtrare după număr de camere
+      if (filters.rooms !== 'all' && property.details.rooms !== parseInt(filters.rooms)) {
+        return false;
+      }
+
+      // Filtrare după complex
+      if (filters.complex !== 'all' && property.location.complex !== filters.complex) {
+        return false;
+      }
+
+      // Filtrare după preț
+      if (filters.priceRange !== 'all') {
+        const [min, max] = filters.priceRange.split('-').map(Number);
+        if (property.price < min || property.price > max) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }, [searchTerm, filters]);
+
+  const FilterButton = ({ label, value, currentValue, onChange }) => (
+    <button
+      onClick={() => onChange(value)}
+      className={`px-3 py-1 rounded-full text-sm transition-colors ${
+        currentValue === value
+          ? 'bg-brand-orange text-white'
+          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+      }`}
+    >
+      {label}
+    </button>
+  );
 
   return (
     <section id="properties" className="py-16 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-8">Proprietăți Disponibile</h2>
-        
-        <div className="mb-8 flex flex-wrap gap-4">
-          <select
-            className="px-4 py-2 border rounded-md"
-            value={filters.rooms}
-            onChange={(e) => setFilters(prev => ({ ...prev, rooms: e.target.value }))}
-          >
-            <option value="all">Toate camerele</option>
-            <option value="2">2 camere</option>
-            <option value="3">3 camere</option>
-            <option value="4">4 camere</option>
-          </select>
-          
-          <select
-            className="px-4 py-2 border rounded-md"
-            value={filters.priceRange}
-            onChange={(e) => setFilters(prev => ({ ...prev, priceRange: e.target.value }))}
-          >
-            <option value="all">Toate prețurile</option>
-            <option value="800-1200">800€ - 1200€</option>
-            <option value="1200-1500">1200€ - 1500€</option>
-            <option value="1500-2000">1500€ - 2000€</option>
-          </select>
+        <div className="mb-8">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <h2 className="text-3xl font-bold text-brand-dark">Proprietăți Disponibile</h2>
+            
+            <div className="w-full md:w-auto flex flex-wrap gap-4">
+              <div className="relative flex-1 md:w-64">
+                <input
+                  type="text"
+                  placeholder="Caută proprietăți..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-orange focus:border-transparent"
+                />
+                <Search className="absolute left-3 top-2.5 text-gray-400" size={20} />
+              </div>
+              
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+              >
+                <SlidersHorizontal size={20} />
+                Filtre
+              </button>
+            </div>
+          </div>
+
+          {showFilters && (
+            <div className="mt-4 p-4 bg-white rounded-lg shadow-lg animate-fade-in">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold text-brand-dark">Filtrează proprietățile</h3>
+                <button
+                  onClick={() => {
+                    setFilters({
+                      status: 'all',
+                      rooms: 'all',
+                      complex: 'all',
+                      priceRange: 'all'
+                    });
+                    setSearchTerm('');
+                  }}
+                  className="text-sm text-brand-orange hover:text-brand-orange-dark"
+                >
+                  Resetează filtrele
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <h4 className="text-sm font-medium text-gray-700 mb-2">Status</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {filterOptions.status.map(option => (
+                      <FilterButton
+                        key={option.value}
+                        label={option.label}
+                        value={option.value}
+                        currentValue={filters.status}
+                        onChange={(value) => setFilters(prev => ({ ...prev, status: value }))}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-medium text-gray-700 mb-2">Număr camere</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {filterOptions.rooms.map(option => (
+                      <FilterButton
+                        key={option.value}
+                        label={option.label}
+                        value={option.value}
+                        currentValue={filters.rooms}
+                        onChange={(value) => setFilters(prev => ({ ...prev, rooms: value }))}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-medium text-gray-700 mb-2">Complex</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {filterOptions.complex.map(option => (
+                      <FilterButton
+                        key={option.value}
+                        label={option.label}
+                        value={option.value}
+                        currentValue={filters.complex}
+                        onChange={(value) => setFilters(prev => ({ ...prev, complex: value }))}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-medium text-gray-700 mb-2">Preț</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {filterOptions.priceRange.map(option => (
+                      <FilterButton
+                        key={option.value}
+                        label={option.label}
+                        value={option.value}
+                        currentValue={filters.priceRange}
+                        onChange={(value) => setFilters(prev => ({ ...prev, priceRange: value }))}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredProperties.map((property) => (
             <div
               key={property.id}
-              className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transform transition hover:scale-105"
-              onClick={() => onPropertySelect(property)}
+              className="bg-white rounded-lg shadow-lg overflow-hidden group hover:shadow-xl transition-all"
             >
-              <img
-                src={property.image}
-                alt={property.title}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">{property.title}</h3>
-                <p className="text-gray-600 mb-4">{property.details.area} mp | {property.details.rooms} camere</p>
-                <div className="flex justify-between items-center">
-                  <span className="text-2xl font-bold text-indigo-600">{property.price}€</span>
+              <div className="relative h-64 overflow-hidden">
+                <img
+                  src={`/src/assets/images/properties/${property.id}/1.jpg`}
+                  alt={property.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                {property.status !== propertyStatuses.AVAILABLE && (
+                  <div className="absolute top-4 right-4 px-3 py-1 rounded-full text-sm font-medium 
+                    bg-black/70 text-white backdrop-blur-sm">
+                    {property.status === propertyStatuses.RENTED ? 'Închiriat' : 'Rezervat'}
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
                   <button
-                    className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onPropertySelect(property);
+                    onClick={() => {
+                      setSelectedProperty(property);
+                      setShowGallery(true);
                     }}
+                    className="absolute bottom-4 right-4 bg-white/90 text-brand-dark px-4 py-2 rounded-md 
+                      hover:bg-brand-orange hover:text-white transition-colors"
                   >
-                    Vezi Detalii
+                    Vezi galerie foto
                   </button>
                 </div>
+              </div>
+
+              <div className="p-6">
+                <h3 className="text-xl font-bold text-brand-dark mb-2">{property.title}</h3>
+                <div className="flex justify-between items-center mb-4">
+                  <div className="text-brand-gray-medium">
+                    {property.details.rooms} camere • {property.details.area} mp
+                  </div>
+                  <div className="text-2xl font-bold text-brand-orange">
+                    {property.price}€
+                  </div>
+                </div>
+
+                <p className="text-brand-gray-medium mb-4 line-clamp-2">
+                  {property.description}
+                </p>
+
+                {property.status === propertyStatuses.AVAILABLE ? (
+                  <button
+                    onClick={() => {
+                      setSelectedProperty(property);
+                      setShowModal(true);
+                    }}
+                    className="w-full px-4 py-2 bg-brand-orange text-white rounded-md 
+                      hover:bg-brand-orange-dark transition-colors"
+                  >
+                    Vezi detalii
+                  </button>
+                ) : (
+                  <div className="text-center text-brand-gray-medium text-sm">
+                    Disponibil din: {property.availableFrom}
+                  </div>
+                )}
               </div>
             </div>
           ))}
         </div>
+
+        {filteredProperties.length === 0 && (
+          <div className="text-center py-12">
+            <h3 className="text-xl font-semibold text-brand-dark mb-2">
+              Nu am găsit proprietăți care să corespundă criteriilor tale
+            </h3>
+            <p className="text-brand-gray-medium mb-4">
+              Încearcă să ajustezi filtrele sau să ștergi termenul de căutare
+            </p>
+            <button
+              onClick={() => {
+                setFilters({
+                  status: 'all',
+                  rooms: 'all',
+                  complex: 'all',
+                  priceRange: 'all'
+                });
+                setSearchTerm('');
+              }}
+              className="px-4 py-2 bg-brand-orange text-white rounded-md hover:bg-brand-orange-dark transition-colors"
+              >
+                Resetează filtrele
+              </button>
+          </div>
+        )}
+
+        {/* Property Gallery Modal */}
+        {showGallery && selectedProperty && (
+          <PropertyGallery
+            isOpen={showGallery}
+            onClose={() => setShowGallery(false)}
+            property={selectedProperty}
+          />
+        )}
+
+        {/* Property Details Modal */}
+        {showModal && selectedProperty && (
+          <PropertyModal
+            property={selectedProperty}
+            onClose={() => setShowModal(false)}
+            onOpenGallery={() => {
+              setShowModal(false);
+              setShowGallery(true);
+            }}
+          />
+        )}
       </div>
     </section>
   );
 }
+
+// Adaugă StatusBadge component pentru a afișa statusul proprietății
+const StatusBadge = ({ status }) => {
+  const statusConfig = {
+    [propertyStatuses.AVAILABLE]: {
+      text: 'Disponibil',
+      className: 'bg-green-100 text-green-800'
+    },
+    [propertyStatuses.RENTED]: {
+      text: 'Închiriat',
+      className: 'bg-red-100 text-red-800'
+    },
+    [propertyStatuses.RESERVED]: {
+      text: 'Rezervat',
+      className: 'bg-yellow-100 text-yellow-800'
+    }
+  };
+
+  const config = statusConfig[status];
+  
+  return (
+    <span className={`px-2 py-1 rounded-full text-xs font-medium ${config.className}`}>
+      {config.text}
+    </span>
+  );
+};

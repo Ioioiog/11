@@ -1,97 +1,164 @@
-import React from 'react';
-import { X } from 'lucide-react';
+// src/components/PropertyModal.jsx
 
-export default function PropertyModal({ property, onClose }) {
+import PropTypes from 'prop-types';
+import { X, MapPin, Home, Square, ArrowUpDown, Building } from 'lucide-react';
+
+export default function PropertyModal({ property, onClose, onOpenGallery }) {
   if (!property) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-      <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onClick={onClose}></div>
-
-        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
-          <div className="relative">
-            <img
-              src={property.image}
-              alt={property.title}
-              className="w-full h-64 object-cover"
-            />
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-sm">
+      <div className="relative min-h-screen flex items-center justify-center p-4">
+        <div className="relative bg-white w-full max-w-6xl rounded-lg shadow-2xl overflow-hidden">
+          {/* Header */}
+          <div className="flex justify-between items-center p-6 border-b">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">{property.title}</h2>
+              <div className="flex items-center text-gray-600 mt-1">
+                <MapPin size={18} className="mr-1" />
+                <span>{property.location.address}</span>
+              </div>
+            </div>
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 p-2 bg-white rounded-full shadow-lg hover:bg-gray-100"
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
             >
               <X size={24} />
             </button>
           </div>
 
-          <div className="bg-white px-4 pt-5 pb-4 sm:p-6">
+          <div className="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Left Column - Details */}
             <div className="space-y-6">
               <div>
-                <h3 className="text-2xl font-bold text-gray-900">{property.title}</h3>
-                <p className="mt-2 text-lg text-indigo-600 font-semibold">{property.price}€ / lună</p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Informații Generale</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex items-center">
+                    <Home className="w-5 h-5 text-brand-orange mr-2" />
+                    <div>
+                      <p className="text-sm text-gray-500">Număr camere</p>
+                      <p className="font-medium">{property.details.rooms}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center">
+                    <Square className="w-5 h-5 text-brand-orange mr-2" />
+                    <div>
+                      <p className="text-sm text-gray-500">Suprafață utilă</p>
+                      <p className="font-medium">{property.details.area} mp</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center">
+                    <ArrowUpDown className="w-5 h-5 text-brand-orange mr-2" />
+                    <div>
+                      <p className="text-sm text-gray-500">Etaj</p>
+                      <p className="font-medium">{property.details.floor}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center">
+                    <Building className="w-5 h-5 text-brand-orange mr-2" />
+                    <div>
+                      <p className="text-sm text-gray-500">Corp</p>
+                      <p className="font-medium">{property.details.building}</p>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div className="border-t border-gray-200 pt-4">
-                <h4 className="text-lg font-medium text-gray-900">Detalii proprietate</h4>
-                <dl className="mt-4 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-                  <div>
-                    <dt className="text-sm font-medium text-gray-500">Suprafață utilă</dt>
-                    <dd className="mt-1 text-sm text-gray-900">{property.details.area} mp</dd>
-                  </div>
-                  <div>
-                    <dt className="text-sm font-medium text-gray-500">Camere</dt>
-                    <dd className="mt-1 text-sm text-gray-900">{property.details.rooms}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-sm font-medium text-gray-500">Etaj</dt>
-                    <dd className="mt-1 text-sm text-gray-900">{property.details.floor}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-sm font-medium text-gray-500">An construcție</dt>
-                    <dd className="mt-1 text-sm text-gray-900">{property.details.year}</dd>
-                  </div>
-                </dl>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Descriere</h3>
+                <p className="text-gray-600">{property.description}</p>
               </div>
 
-              <div className="border-t border-gray-200 pt-4">
-                <h4 className="text-lg font-medium text-gray-900">Descriere</h4>
-                <p className="mt-2 text-gray-600">{property.description}</p>
-              </div>
-
-              <div className="border-t border-gray-200 pt-4">
-                <h4 className="text-lg font-medium text-gray-900">Facilități</h4>
-                <ul className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  {property.amenities.map((amenity) => (
-                    <li key={amenity} className="flex items-center text-gray-600">
-                      <svg className="h-5 w-5 text-indigo-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                      </svg>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Facilități</h3>
+                <div className="grid grid-cols-2 gap-3">
+                  {property.amenities.map((amenity, index) => (
+                    <div key={index} className="flex items-center text-gray-600">
+                      <span className="w-2 h-2 bg-brand-orange rounded-full mr-2"></span>
                       {amenity}
-                    </li>
+                    </div>
                   ))}
-                </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column - Image & Price Info */}
+            <div>
+              <div className="relative rounded-lg overflow-hidden mb-6">
+                <img
+                  src={property.images?.[0] || "https://www.primavista.ro/wp-content/uploads/2023/04/1p.png"}
+                  alt={property.title}
+                  className="w-full h-64 object-cover"
+                />
+                <button
+                  onClick={onOpenGallery}
+                  className="absolute bottom-4 right-4 bg-white/90 text-brand-dark px-4 py-2 rounded-md 
+                    hover:bg-brand-orange hover:text-white transition-colors backdrop-blur-sm"
+                >
+                  Vezi toate pozele
+                </button>
+              </div>
+
+              <div className="bg-gray-50 p-6 rounded-lg">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-gray-600">Preț chirie</span>
+                  <span className="text-3xl font-bold text-brand-orange">{property.price}€</span>
+                </div>
+                <div className="space-y-3">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Complex</span>
+                    <span className="font-medium">{property.location.complex}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Suprafață totală</span>
+                    <span className="font-medium">{property.details.totalArea} mp</span>
+                  </div>
+                  {property.details.balcony && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Suprafață balcon</span>
+                      <span className="font-medium">{property.details.balcony} mp</span>
+                    </div>
+                  )}
+                </div>
+                <button
+                  onClick={() => {
+                    onClose();
+                    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="w-full mt-6 px-4 py-2 bg-brand-orange text-white rounded-md 
+                    hover:bg-brand-orange-dark transition-colors"
+                >
+                  Programează vizionare
+                </button>
               </div>
             </div>
           </div>
-
-          <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-            <button
-              type="button"
-              className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm"
-              onClick={() => window.location.href = '#contact'}
-            >
-              Programează vizionare
-            </button>
-            <button
-              type="button"
-              className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-              onClick={onClose}
-            >
-              Închide
-            </button>
           </div>
-        </div>
       </div>
     </div>
   );
 }
+
+PropertyModal.propTypes = {
+  property: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    location: PropTypes.shape({
+      address: PropTypes.string.isRequired,
+      complex: PropTypes.string.isRequired
+    }).isRequired,
+    details: PropTypes.shape({
+      rooms: PropTypes.number.isRequired,
+      area: PropTypes.number.isRequired,
+      floor: PropTypes.number.isRequired,
+      building: PropTypes.string.isRequired,
+      totalArea: PropTypes.number.isRequired,
+      balcony: PropTypes.number
+    }).isRequired,
+    description: PropTypes.string.isRequired,
+    amenities: PropTypes.arrayOf(PropTypes.string).isRequired,
+    price: PropTypes.number.isRequired,
+    images: PropTypes.arrayOf(PropTypes.string)
+  }),
+  onClose: PropTypes.func.isRequired,
+  onOpenGallery: PropTypes.func.isRequired
+};
