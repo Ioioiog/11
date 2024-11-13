@@ -1,3 +1,5 @@
+// vite.config.js
+
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
@@ -18,15 +20,36 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
+    cssCodeSplit: true,
+    sourcemap: false,
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true
+      }
+    },
     rollupOptions: {
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom', 'react-router-dom'],
           utils: ['@headlessui/react', 'lucide-react']
         },
-        assetFileNames: 'assets/[name].[ext]',
-        chunkFileNames: 'assets/[name].[hash].js',
-        entryFileNames: 'assets/[name].[hash].js'
+        assetFileNames: (assetInfo) => {
+          const extType = assetInfo.name.split('.').at(1);
+          if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(extType)) {
+            return `assets/images/[name][extname]`;
+          }
+          if (/css/i.test(extType)) {
+            return 'assets/css/[name][extname]';
+          }
+          return `assets/[name][extname]`;
+        },
+        chunkFileNames: 'assets/js/[name]-[hash].js',
+        entryFileNames: 'assets/js/[name]-[hash].js'
+      },
+      input: {
+        main: path.resolve(__dirname, 'index.html')
       }
     }
   }
