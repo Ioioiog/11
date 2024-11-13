@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import logo from '../assets/images/logo.png';
+import { AgentPortal} from 'scr/pages/agent/AgentPortal';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -45,60 +46,60 @@ export default function Navbar() {
             </a>
           </div>
 
-          {/* Meniu Desktop */}
-          <div className="hidden md:flex items-center gap-8">
-            <div className="flex gap-6">
-              <a 
-                href="#properties" 
-                className={`font-medium hover:text-brand-orange transition-colors ${
-                  isScrolled ? 'text-brand-dark' : 'text-white'
-                }`}
-              >
-                Proprietăți
-              </a>
-              <a 
-                href="#about" 
-                className={`font-medium hover:text-brand-orange transition-colors ${
-                  isScrolled ? 'text-brand-dark' : 'text-white'
-                }`}
-              >
-                Despre Noi
-              </a>
-              <a 
-                href="#contact" 
-                className={`font-medium hover:text-brand-orange transition-colors ${
-                  isScrolled ? 'text-brand-dark' : 'text-white'
-                }`}
-              >
-                Contact
-              </a>
-            </div>
+          /* Meniu Desktop */
+                <div className="hidden md:flex items-center gap-8">
+                <div className="flex gap-6">
+                  <a 
+                  href="#properties" 
+                  className={`font-medium hover:text-brand-orange transition-colors ${
+                    isScrolled ? 'text-brand-dark' : 'text-white'
+                  }`}
+                  >
+                  Proprietăți
+                  </a>
+                  <a 
+                  href="#about" 
+                  className={`font-medium hover:text-brand-orange transition-colors ${
+                    isScrolled ? 'text-brand-dark' : 'text-white'
+                  }`}
+                  >
+                  Despre Noi
+                  </a>
+                  <a 
+                  href="#contact" 
+                  className={`font-medium hover:text-brand-orange transition-colors ${
+                    isScrolled ? 'text-brand-dark' : 'text-white'
+                  }`}
+                  >
+                  Contact
+                  </a>
+                </div>
 
-            <div className="flex items-center gap-4">
-              <a
-                href="https://chiriasi.apartamentdelux.ro"
-                className={`px-4 py-2 rounded-md transition-colors ${
-                  isScrolled 
+                <div className="flex items-center gap-4">
+                  <a
+                  href="https://chiriasi.apartamentdelux.ro"
+                  className={`px-4 py-2 rounded-md transition-colors ${
+                    isScrolled 
                     ? 'bg-brand-orange text-white hover:bg-brand-orange-dark'
                     : 'bg-white/10 text-white hover:bg-white/20'
-                }`}
-              >
-                Portal Chiriași
-              </a>
-              <a
-                href="/src/components/AgentPortal.jsx"
-                className={`px-4 py-2 rounded-md border transition-colors ${
-                  isScrolled
+                  }`}
+                  >
+                  Portal Chiriași
+                  </a>
+                  <a
+                  href="/src/components/AgentPortal.jsx"
+                  className={`px-4 py-2 rounded-md border transition-colors ${
+                    isScrolled
                     ? 'border-brand-orange text-brand-orange hover:bg-brand-orange/10'
                     : 'border-white text-white hover:bg-white/10'
-                }`}
-              >
-                Portal Agenți
-              </a>
-            </div>
-          </div>
+                  }`}
+                  >
+                  Portal Agenți
+                  </a>
+                </div>
+                </div>
 
-          {/* Buton Meniu Mobil */}
+                {/* Buton Meniu Mobil */}
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsOpen(!isOpen)}
