@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import logo from '../assets/images/logo.png';
-import AgentPortal from '../../pages/agent/AgentPortal.jsx';
+import AgentPortal from '../components/AgentPortal';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -87,7 +87,7 @@ export default function Navbar() {
                   Portal Chiriași
                   </a>
                   <a
-                  href="/AgentPortal"
+                  href='/agent-portal'
                   className={`px-4 py-2 rounded-md border transition-colors ${
                     isScrolled
                     ? 'border-brand-orange text-brand-orange hover:bg-brand-orange/10'
