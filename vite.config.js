@@ -5,18 +5,22 @@ import Pages from 'vite-plugin-pages';
 import path from 'path';
 
 export default defineConfig({
-  base: './', 
+  base: './',
   plugins: [
     react(),
     Pages({
-      dirs: 'src/pages', // Directory where page components are stored
-      extensions: ['vue', 'js', 'ts', 'jsx', 'tsx'], // Supported file extensions
+      dirs: 'src/pages',
+      extensions: ['vue', 'js', 'ts', 'jsx', 'tsx'],
     }),
     viteStaticCopy({
       targets: [
         {
-          src: 'src/assets/*',
-          dest: 'assets'
+          src: 'src/assets/images/*',
+          dest: 'assets/images'
+        },
+        {
+          src: 'public/*',
+          dest: '.'
         }
       ]
     })
@@ -31,11 +35,11 @@ export default defineConfig({
       output: {
         chunkFileNames: 'assets/js/[name]-[hash].js',
         entryFileNames: 'assets/js/[name]-[hash].js',
+        assetFileNames: 'assets/[ext]/[name]-[hash].[ext]'
       },
-        input: {
-          main: resolve(__dirname, 'index.html'),
-          nested: resolve(__dirname, 'nested/index.html'),
-        },
+      input: {
+        main: path.resolve(__dirname, 'index.html')
+      }
     }
   }
 });
