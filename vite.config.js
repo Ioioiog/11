@@ -5,7 +5,13 @@ import { viteStaticCopy } from 'vite-plugin-static-copy'
 export default defineConfig({
   base: './', 
   plugins: [
-    react(),
+    react(), {
+    resolve: {
+      alias: {
+        '@': './src'
+      }
+    }
+    },
     viteStaticCopy({
       targets: [
         {

@@ -7,7 +7,7 @@ import { propertyData } from '/src/data/properties';
 import ViewingRequestForm from './ViewingRequestForm';
 
 
-export default function AgentPortal() {
+const AgentPortal = () =>{
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [showContactForm, setShowContactForm] = useState(false);
 
@@ -196,3 +196,4 @@ Cu stimă,`;
     </div>
   );
 }
+export default AgentPortal;
