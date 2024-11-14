@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { RouterProvider, createBrowserRouter, createRoutesFromElements, Route, Outlet } from 'react-router-dom';
 import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
