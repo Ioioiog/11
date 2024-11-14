@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { HashRouter as Router, Route, Routes } from 'react-router-dom';
+import { HashRouter as Router, Route, Routes, Outlet } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import PropertyList from './components/PropertyList';
@@ -48,21 +48,18 @@ const MainLayout = () => {
   );
 };
 
-// Router Configuration
-function App() {
+// App Component with HashRouter
+const App = () => {
   return (
     <Router>
       <Routes>
-      <Route path="/" element={<MainLayout />} />
-      <Route path="/agent" element={<AgentPortal />} />
+        <Route element={<RootLayout />}>
+          <Route path="/" element={<MainLayout />} />
+          <Route path="/portal-agenti" element={<AgentPortal />} />
+        </Route>
       </Routes>
     </Router>
   );
-}
-
-// App Component
-const App = () => {
-  return <RouterProvider router={router} />;
 };
 
 export default App;
