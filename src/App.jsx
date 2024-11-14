@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { RouterProvider, createBrowserRouter, createRoutesFromElements, Route } from 'react-router-dom';
+import { RouterProvider, createBrowserRouter, createRoutesFromElements, Route, Outlet } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import PropertyList from './components/PropertyList';
@@ -9,6 +9,16 @@ import Footer from './components/Footer';
 import PropertyGallery from './components/PropertyGallery';
 import AgentPortal from './components/AgentPortal';
 
+// Root Layout Component
+const RootLayout = () => {
+  return (
+    <div className="min-h-screen">
+      <Outlet />
+    </div>
+  );
+};
+
+// Main Layout Component
 const MainLayout = () => {
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [showGallery, setShowGallery] = useState(false);
@@ -38,16 +48,19 @@ const MainLayout = () => {
   );
 };
 
+// Router Configuration
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route>
+    <Route element={<RootLayout />}>
       <Route path="/" element={<MainLayout />} />
       <Route path="/agent" element={<AgentPortal />} />
     </Route>
   )
 );
 
-
-export default function App() {
+// App Component
+const App = () => {
   return <RouterProvider router={router} />;
-}
+};
+
+export default App;

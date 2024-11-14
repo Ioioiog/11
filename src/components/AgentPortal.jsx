@@ -197,5 +197,4 @@ Cu stimă,`;
   );
 };
 
-
 export default AgentPortal;
