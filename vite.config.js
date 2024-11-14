@@ -5,10 +5,12 @@ export default defineConfig({
   base: './', 
   plugins: [react()],
   build: {
+    assetsDir: './assets',
+    
     rollupOptions: {
       external: ['../../pages/agent/AgentPortal'],
             output: {
-        assetFileNames: 'assets/images/hero/hero-image.jpg',
+        assetFileNames: './public/assets/images/hero/hero-image.jpg',
         chunkFileNames: 'assets/images/[name]-[hash].js',
         entryFileNames: 'assets/images/[name]-[hash].js'
       }
