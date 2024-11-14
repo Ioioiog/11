@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { RouterProvider, createBrowserRouter, createRoutesFromElements, Route, Outlet } from 'react-router-dom';
+import { RouterProvider, createBrowserRouter, createRoutesFromElements, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import PropertyList from './components/PropertyList';
@@ -9,16 +9,6 @@ import Footer from './components/Footer';
 import PropertyGallery from './components/PropertyGallery';
 import AgentPortal from './components/AgentPortal';
 
-// Root Layout Component
-const RootLayout = () => {
-  return (
-    <div className="min-h-screen">
-      <Outlet />
-    </div>
-  );
-};
-
-// Main Layout Component
 const MainLayout = () => {
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [showGallery, setShowGallery] = useState(false);
@@ -48,27 +38,16 @@ const MainLayout = () => {
   );
 };
 
-// Router Configuration
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route element={<RootLayout />}>
+    <Route>
       <Route path="/" element={<MainLayout />} />
-      <Route path="/agent" element={<AgentPortal />} />
+      <Route path="/AgentPortal" element={<AgentPortal />} />
     </Route>
   )
 );
 
-// App Component
-const App = () => {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<MainPage />} />
-        <Route path="/portal-agenti" element={<PortalAgenti />} />
-      </Routes>
-    </Router>
-  );
 
-};
-
-export default App;
+export default function App() {
+  return <RouterProvider router={router} />;
+}
