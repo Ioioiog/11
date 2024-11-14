@@ -8,6 +8,7 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import PropertyGallery from './components/PropertyGallery';
 import AgentPortal from './nested/AgentPortal';
+import AgentSection from './components/AgentSection';
 
 const MainLayout = () => {
   const [selectedProperty, setSelectedProperty] = useState(null);
@@ -25,6 +26,7 @@ const MainLayout = () => {
       />
       <About />
       <Contact />
+      <AgentSection />
       <Footer />
       {showGallery && selectedProperty && (
         <PropertyGallery
