@@ -42,7 +42,7 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
       <Route path="/" element={<MainLayout />} />
-      <Route path="/AgentPortal" element={<AgentPortal />} />
+      <Route path="/agent" element={<AgentPortal />} />
     </Route>
   )
 );
