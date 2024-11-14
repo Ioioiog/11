@@ -4,8 +4,14 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 import Pages from 'vite-plugin-pages';
 import path from 'path';
 
+// Define base path
+const BASE_PATH = '/';
+
 export default defineConfig({
-  base: './',
+  base: BASE_PATH,
+  define: {
+    'process.env.BASE_PATH': JSON.stringify(BASE_PATH)
+  },
   plugins: [
     react(),
     Pages({
