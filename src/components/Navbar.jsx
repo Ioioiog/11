@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import logo from '../../public/assets/images/logo.png';
-import { Link } from'react-router-dom';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-
+  const basePath = import.meta.env.BASE_PATH || '';
   // Adaugă efect de scroll pentru header
   useEffect(() => {
     const handleScroll = () => {
