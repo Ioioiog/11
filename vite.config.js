@@ -8,7 +8,7 @@ export default defineConfig({
     rollupOptions: {
       external: ['../../pages/agent/AgentPortal'],
             output: {
-        assetFileNames: 'assets/images/[name].[ext]',
+        assetFileNames: 'assets/images/hero/hero-image.jpg',
         chunkFileNames: 'assets/images/[name]-[hash].js',
         entryFileNames: 'assets/images/[name]-[hash].js'
       }

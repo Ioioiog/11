@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
-import { getPropertyImages } from '../assets/images/properties';
+import { getPropertyImages } from '../../public/assets/images/properties';
 
 export default function PropertyGallery({ isOpen, onClose, property }) {
   const [currentIndex, setCurrentIndex] = useState(0);
