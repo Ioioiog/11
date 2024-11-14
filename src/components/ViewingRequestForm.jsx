@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { X } from 'lucide-react';
 
-export const ViewingRequestForm = ({ onSubmit, onClose, propertyTitle }) => {
+const ViewingRequestForm = ({ onSubmit, onClose, propertyTitle }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -48,4 +48,4 @@ ViewingRequestForm.propTypes = {
   propertyTitle: PropTypes.string
 };
 
-export { ViewingRequestForm };
+export default ViewingRequestForm;

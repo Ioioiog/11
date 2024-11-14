@@ -1,13 +1,13 @@
-// src/components/AgentPortal.jsx
+// src/pages/agent/AgentPortal.jsx
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Building, Users, Calculator, Clock, Mail } from 'lucide-react';
-import { propertyData } from '../data/properties';
+import { propertyData } from '/src/data/properties';
 import ViewingRequestForm from './ViewingRequestForm';
 
 
-const AgentPortal = () => {
+export default function AgentPortal() {
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [showContactForm, setShowContactForm] = useState(false);
 
@@ -195,7 +195,4 @@ Cu stimă,`;
       </footer>
     </div>
   );
-};
-
-
-export default AgentPortal;
+}
