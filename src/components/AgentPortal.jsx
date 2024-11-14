@@ -4,10 +4,10 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Building, Users, Calculator, Clock, Mail } from 'lucide-react';
 import { propertyData } from '../data/properties';
-import { ViewingRequestForm } from './src/components/ViewingRequestForm';
+import { ViewingRequestForm } from './ViewingRequestForm';
 
 
-export default function AgentPortal() {
+const AgentPortal = () => {
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [showContactForm, setShowContactForm] = useState(false);
 
@@ -195,4 +195,7 @@ Cu stimă,`;
       </footer>
     </div>
   );
-}
+};
+
+
+export default AgentPortal;

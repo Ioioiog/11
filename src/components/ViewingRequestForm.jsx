@@ -1,4 +1,4 @@
-// src/components/ViewingRequestForm/index.jsx
+// src/components/ViewingRequestForm.jsx
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { X } from 'lucide-react';
@@ -48,4 +48,4 @@ ViewingRequestForm.propTypes = {
   propertyTitle: PropTypes.string
 };
 
-export default ViewingRequestForm;
+export { ViewingRequestForm };
