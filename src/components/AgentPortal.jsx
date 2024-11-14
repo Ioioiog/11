@@ -1,4 +1,4 @@
-// src/pages/agent/AgentPortal.jsx
+// AgentPortal
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';

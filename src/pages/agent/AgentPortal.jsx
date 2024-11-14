@@ -3,8 +3,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Building, Users, Calculator, Clock, Mail } from 'lucide-react';
-import { propertyData } from '../data/properties';
-import { ViewingRequestForm } from './ViewingRequestForm';
+import { propertyData } from '/src/data/properties';
+import { ViewingRequestForm } from '/src/components/ViewingRequestForm';
 
 
 export default function AgentPortal() {

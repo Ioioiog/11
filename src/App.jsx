@@ -7,7 +7,7 @@ import About from './components/About';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import PropertyGallery from './components/PropertyGallery';
-import AgentPortal from '/src/components/AgentPortal';
+import AgentPortal from '/src/pages/agent/AgentPortal';
 
 const MainLayout = () => {
   const [selectedProperty, setSelectedProperty] = useState(null);
@@ -42,7 +42,7 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
       <Route path="/" element={<MainLayout />} />
-      <Route path="/agent" element={<AgentPortal />} />
+      <Route path="/agentportal" element={<AgentPortal />} />
     </Route>
   )
 );

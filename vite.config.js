@@ -1,18 +1,25 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 export default defineConfig({
   base: './', 
-  plugins: [react()],
+  plugins: [
+    react(),
+    viteStaticCopy({
+      targets: [
+        {
+          src: 'src/assets/*',
+          dest: 'assets'
+        }
+      ]
+    })
+  ],
   build: {
-    assetsDir: './assets',
-    
     rollupOptions: {
-      external: ['../../pages/agent/AgentPortal'],
-            output: {
-        assetFileNames: './public/assets/images/hero/hero-image.jpg',
-        chunkFileNames: 'assets/images/[name]-[hash].js',
-        entryFileNames: 'assets/images/[name]-[hash].js'
+      output: {
+        chunkFileNames: 'assets/js/[name]-[hash].js',
+        entryFileNames: 'assets/js/[name]-[hash].js'
       }
     }
   }
