@@ -31,7 +31,11 @@ export default defineConfig({
       output: {
         chunkFileNames: 'assets/js/[name]-[hash].js',
         entryFileNames: 'assets/js/[name]-[hash].js',
-      }
+      },
+        input: {
+          main: resolve(__dirname, 'index.html'),
+          nested: resolve(__dirname, 'nested/index.html'),
+        },
     }
   }
 });

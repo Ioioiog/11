@@ -7,7 +7,7 @@ import About from './components/About';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import PropertyGallery from './components/PropertyGallery';
-import AgentPortal from './pages/AgentPortal';
+import AgentPortal from './nested/AgentPortal';
 
 const MainLayout = () => {
   const [selectedProperty, setSelectedProperty] = useState(null);
