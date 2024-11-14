@@ -1,6 +1,6 @@
 // src/assets/images/properties/index.js
 
-import a25_1 from './a25/1.jpg';
+import a25_1 from './a25/1.jpg'; 
 import a25_2 from './a25/2.jpg';
 import a25_3 from './a25/3.jpg';
 import a25_4 from './a25/4.jpg';

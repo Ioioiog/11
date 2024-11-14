@@ -189,7 +189,7 @@ export default function PropertyList() {
             >
               <div className="relative h-64 overflow-hidden">
                 <img
-                  src={`/src/assets/images/properties/${property.id}/1.jpg`}
+                  src={`../assets/images/properties/${property.id}/1.jpg`}
                   alt={property.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />

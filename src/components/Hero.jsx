@@ -6,7 +6,7 @@ export default function Hero() {
     <div className="relative bg-brand-dark h-screen">
       <div className="absolute inset-0">
         <img
-          src="/src/assets/images/hero/hero-image.jpg"
+          src="../assets/images/hero/hero-image.jpg"
           alt="Luxury apartment"
           className="w-full h-full object-cover"
         />
