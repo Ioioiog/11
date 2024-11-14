@@ -132,7 +132,7 @@ export default function Navbar() {
                   Portal Chiriași
                 </a>
                 <a 
-                  href="./src/components/AgentPortal.jsx" 
+                  href="/agent" 
                   className="block px-3 py-2 text-brand-orange border border-brand-orange rounded-md text-center"
                 >
                   Portal Agenți
