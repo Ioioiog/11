@@ -17,7 +17,7 @@ export default function Contact() {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    const emailSubject = "Formular de contact - Red Domain";
+    const emailSubject = "Formular de contact - apartamentdelux.ro";
     const emailBody = `
 Detalii contact:
 Nume: ${formData.name}
@@ -64,7 +64,7 @@ ${formData.message}
               Contactează-ne
             </h2>
             <p className="text-brand-gray-dark/80">
-              Suntem aici să te ajutăm. Trimite-ne un mesaj și te vom contacta în cel mai scurt timp.
+              Trimite-ne un mesaj și o să îți răspundem cât mai curând posibil.
             </p>
           </div>
           

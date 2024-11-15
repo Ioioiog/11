@@ -72,17 +72,6 @@ export default function Navbar() {
               Contact
             </a>
             <a
-              href="#AgentPortal"
-              onClick={handleAgentClick}
-              className={`px-4 py-2 rounded-md transition-colors ${
-                isScrolled 
-                  ? 'border border-brand-orange text-brand-orange hover:bg-brand-orange hover:text-white'
-                  : 'bg-white/10 text-white hover:bg-white/20'
-              }`}
-            >
-              Portal Agenți
-            </a>
-            <a
               href="https://chiriasi.apartamentdelux.ro"
               className={`px-4 py-2 rounded-md transition-colors ${
                 isScrolled 
