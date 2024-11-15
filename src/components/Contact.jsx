@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Mail, Phone, User, MessageCircle } from 'lucide-react';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -15,95 +16,143 @@ export default function Contact() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    const emailSubject = "Formular de contact - Red Domain";
+    const emailBody = `
+Detalii contact:
+Nume: ${formData.name}
+Email: ${formData.email}
+Telefon: ${formData.phone}
+
+Mesaj:
+${formData.message}
+    `;
+
+    window.location.href = `mailto:reddomainrent@gmail.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+
     setStatus({
       type: 'success',
-      message: 'Mesajul a fost trimis cu succes! Vă vom contacta în curând.'
+      message: 'Se deschide clientul tău de email pentru a trimite mesajul...'
     });
-    setFormData({ name: '', email: '', phone: '', message: '' });
+
+    // Reset form after 3 seconds
+    setTimeout(() => {
+      setFormData({ name: '', email: '', phone: '', message: '' });
+      setStatus({ type: '', message: '' });
+    }, 3000);
   };
 
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData(prev => ({ ...prev, [id]: value }));
+  };
+
+  const inputClasses = "mt-1 block w-full rounded-md border-brand-orange/30 px-4 py-3 focus:border-brand-orange focus:ring focus:ring-brand-orange/20 bg-white/50 backdrop-blur-sm transition-colors";
+  const labelClasses = "flex items-center gap-2 text-sm font-medium text-brand-gray-dark";
+
   return (
-    <section id="contact" className="py-16 bg-brand-gray-light">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="contact" className="relative py-20 bg-gradient-to-b from-brand-gray-light to-white">
+      {/* Decorative Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-brand-orange/5 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-brand-orange/5 rounded-full blur-3xl"></div>
+      </div>
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold text-brand-dark text-center mb-8">
-            Contactează-ne
-          </h2>
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-brand-dark mb-4">
+              Contactează-ne
+            </h2>
+            <p className="text-brand-gray-dark/80">
+              Suntem aici să te ajutăm. Trimite-ne un mesaj și te vom contacta în cel mai scurt timp.
+            </p>
+          </div>
           
-          <div className="bg-white shadow-lg rounded-lg p-8 border border-brand-orange/10">
+          <div className="bg-white/80 backdrop-blur-sm shadow-xl rounded-2xl p-8 border border-brand-orange/10">
             {status.message && (
-              <div className={`mb-4 p-4 rounded ${
-                status.type === 'success' ? 'bg-brand-orange/10 text-brand-dark' : 'bg-red-100 text-red-700'
+              <div className={`mb-6 p-4 rounded-lg ${
+                status.type === 'success' 
+                  ? 'bg-green-50 text-green-700 border border-green-200' 
+                  : 'bg-red-50 text-red-700 border border-red-200'
               }`}>
                 {status.message}
               </div>
             )}
             
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-brand-gray-dark">
-                  Nume complet
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  required
-                  className="mt-1 block w-full rounded-md border-brand-orange/30 px-3 py-2 focus:border-brand-orange focus:ring focus:ring-brand-orange/20"
-                  value={formData.name}
-                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                />
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="name" className={labelClasses}>
+                    <User size={18} className="text-brand-orange" />
+                    Nume complet
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    required
+                    className={inputClasses}
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="Ioan Popescu"
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="email" className={labelClasses}>
+                    <Mail size={18} className="text-brand-orange" />
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    required
+                    className={inputClasses}
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="ioan.popescu@example.com"
+                  />
+                </div>
               </div>
               
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-brand-gray-dark">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  required
-                  className="mt-1 block w-full rounded-md border-brand-orange/30 px-3 py-2 focus:border-brand-orange focus:ring focus:ring-brand-orange/20"
-                  value={formData.email}
-                  onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                />
-              </div>
-              
-              <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-brand-gray-dark">
+                <label htmlFor="phone" className={labelClasses}>
+                  <Phone size={18} className="text-brand-orange" />
                   Telefon
                 </label>
                 <input
                   type="tel"
                   id="phone"
-                  className="mt-1 block w-full rounded-md border-brand-orange/30 px-3 py-2 focus:border-brand-orange focus:ring focus:ring-brand-orange/20"
+                  className={inputClasses}
                   value={formData.phone}
-                  onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                  onChange={handleChange}
+                  placeholder="+40 700 000 000"
                 />
               </div>
               
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-brand-gray-dark">
+                <label htmlFor="message" className={labelClasses}>
+                  <MessageCircle size={18} className="text-brand-orange" />
                   Mesaj
                 </label>
                 <textarea
                   id="message"
-                  rows="4"
+                  rows="5"
                   required
-                  className="mt-1 block w-full rounded-md border-brand-orange/30 px-3 py-2 focus:border-brand-orange focus:ring focus:ring-brand-orange/20"
+                  className={inputClasses}
                   value={formData.message}
-                  onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
+                  onChange={handleChange}
+                  placeholder="Scrie mesajul tău aici..."
                 ></textarea>
               </div>
               
-              <div>
-                <button
-                  type="submit"
-                  className="w-full px-4 py-3 bg-brand-orange text-white rounded-md hover:bg-brand-orange-dark transition-colors font-medium"
-                  onClick={() => window.location.href = `mailto:reddomainrent@gmail.com?subject=Contact%20Form&body=Nume:%20${formData.name}%0AEmail:%20${formData.email}%0ATelefon:%20${formData.phone}%0AMesaj:%20${formData.message}`}
-                >
-                  Trimite mesajul
-                </button>
-              </div>
+              <button
+                type="submit"
+                className="w-full px-6 py-4 bg-brand-orange text-white rounded-lg hover:bg-brand-orange-dark transition-all duration-200 transform hover:scale-[1.02] focus:ring-4 focus:ring-brand-orange/20 font-medium flex items-center justify-center gap-2"
+              >
+                <Mail size={20} />
+                Trimite mesajul
+              </button>
             </form>
           </div>
         </div>

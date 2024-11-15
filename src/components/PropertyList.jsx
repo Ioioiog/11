@@ -6,6 +6,7 @@ import { propertyData, filterOptions, propertyStatuses } from '../data/propertie
 import PropertyModal from './PropertyModal';
 import PropertyGallery from './PropertyGallery';
 
+
 export default function PropertyList() {
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [showGallery, setShowGallery] = useState(false);
@@ -322,5 +323,17 @@ const StatusBadge = ({ status }) => {
     <span className={`px-2 py-1 rounded-full text-xs font-medium ${config.className}`}>
       {config.text}
     </span>
+  );
+};
+
+
+// Adaugă ScheduleViewingButton component pentru a facilita programarea vizionării proprietă��ii
+const ScheduleViewingButton = () => {
+  return (
+    <button
+      className="w-full px-4 py-2 bg-brand-orange text-white rounded-md hover:bg-brand-orange-dark transition-colors"
+    >
+      Programă vizionare
+    </button>
   );
 };

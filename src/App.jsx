@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { RouterProvider, createBrowserRouter, createRoutesFromElements, Route } from 'react-router-dom';
+import { RouterProvider, createBrowserRouter, createRoutesFromElements, Route, Outlet } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import PropertyList from './components/PropertyList';
@@ -7,9 +7,19 @@ import About from './components/About';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import PropertyGallery from './components/PropertyGallery';
-import AgentPortal from './nested/AgentPortal';
-import AgentSection from './components/AgentSection';
+import AgentPortal from './pages/agent/AgentPortal';
+import ViewingRequestForm from './components/ViewingRequestForm';
 
+// Root Layout Component
+const RootLayout = () => {
+  return (
+    <div className="min-h-screen">
+      <Outlet />
+    </div>
+  );
+};
+
+// Main Layout Component
 const MainLayout = () => {
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [showGallery, setShowGallery] = useState(false);
@@ -24,9 +34,8 @@ const MainLayout = () => {
           setShowGallery(true);
         }}
       />
-      <About />
+      <AgentPortal />
       <Contact />
-      <AgentSection />
       <Footer />
       {showGallery && selectedProperty && (
         <PropertyGallery
@@ -40,16 +49,20 @@ const MainLayout = () => {
   );
 };
 
+// Router Configuration
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route>
+    <Route element={<RootLayout />}>
       <Route path="/" element={<MainLayout />} />
-      <Route path="/agent" element={<AgentPortal />} />
+      <Route path="/agentportal" element={<AgentPortal />} />
+      <Route path="/agent/viewing-request-form" element={<ViewingRequestForm />} />
     </Route>
   )
 );
 
-
-export default function App() {
+// App Component
+const App = () => {
   return <RouterProvider router={router} />;
-}
+};
+
+export default App;
