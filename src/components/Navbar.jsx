@@ -113,13 +113,6 @@ export default function Navbar() {
                 Contact
               </a>
               <a 
-                href="#AgentPortal"
-                onClick={handleAgentClick}
-                className="block px-3 py-2 text-brand-orange border border-brand-orange rounded-md text-center hover:bg-brand-orange hover:text-white"
-              >
-                Portal Agenți
-              </a>
-              <a 
                 href="https://chiriasi.apartamentdelux.ro" 
                 className="block px-3 py-2 text-white bg-brand-orange rounded-md text-center hover:bg-brand-orange-dark"
               >
