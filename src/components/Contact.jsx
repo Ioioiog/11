@@ -35,7 +35,6 @@ ${formData.message}
       message: 'Se deschide clientul tău de email pentru a trimite mesajul...'
     });
 
-    // Reset form after 3 seconds
     setTimeout(() => {
       setFormData({ name: '', email: '', phone: '', message: '' });
       setStatus({ type: '', message: '' });
@@ -59,7 +58,7 @@ ${formData.message}
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-5xl mx-auto"> {/* Changed from max-w-3xl to max-w-5xl */}
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-brand-dark mb-4">
               Contactează-ne
@@ -69,7 +68,7 @@ ${formData.message}
             </p>
           </div>
           
-          <div className="bg-white/80 backdrop-blur-sm shadow-xl rounded-2xl p-8 border border-brand-orange/10">
+          <div className="bg-white/80 backdrop-blur-sm shadow-xl rounded-2xl p-8 lg:p-12 border border-brand-orange/10"> {/* Added lg:p-12 for more padding on larger screens */}
             {status.message && (
               <div className={`mb-6 p-4 rounded-lg ${
                 status.type === 'success' 

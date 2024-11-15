@@ -55,7 +55,7 @@ Cu stimă,`;
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-white shadow-sm py-16">
+      <section id="agent-portal" className="bg-white shadow-sm py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Ești agent imobiliar? Colaborează cu noi!
@@ -92,26 +92,6 @@ Cu stimă,`;
           <p className="text-sm text-gray-500 mt-4">
             * Comisionul se plătește după semnarea contractului de închiriere și încasarea primei chirii.
           </p>
-        </div>
-
-        {/* Benefits Section */}
-        <div className="mb-16">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">
-            Beneficii Colaborare
-          </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {benefitsData.map((benefit, index) => (
-              <div key={index} className="bg-white p-6 rounded-lg shadow-lg">
-                <benefit.icon className="w-12 h-12 text-brand-orange mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  {benefit.title}
-                </h3>
-                <p className="text-gray-600">
-                  {benefit.description}
-                </p>
-              </div>
-            ))}
-          </div>
         </div>
       </main>
     </div>
