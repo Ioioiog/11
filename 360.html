@@ -447,155 +447,155 @@ class ApartmentViewer {
         this.panoramas = {
             a25: [
                 {
-                    url: "/living.jpg",
+                    url: "/living.jpg",  // Modern living room panorama
                     title: "Living Room 360°"
                 },
                 {
-                    url: "/kitchen.jpg", 
+                    url: "/kitchen.jpg", // Kitchen
                     title: "Kitchen 360°"
                 },
                 {
-                    url: "/bedroom.jpg",
+                    url: "/bedroom.jpg", // Mountain view bathroom panorama
                     title: "Bedroom 360°"
                 },
                 {
-                    url: "/bathroom.jpg",
+                    url: "/bathroom.jpg", // Empty apartment
                     title: "Bathroom 360°"
                 },
                 {
-                    url: "/balcony.jpg",
+                    url: "/balcony.jpg", // Empty modern room
                     title: "Balcony 360°"
                 }
             ],
             b110: [
                 {
-                    url: "/living.jpg",
+                    url: "/living.jpg",  // Modern living room panorama
                     title: "Living Room 360°"
                 },
                 {
-                    url: "/kitchen.jpg",
+                    url: "/kitchen.jpg", // Kitchen
                     title: "Kitchen 360°"
                 },
                 {
-                    url: "/bedroom.jpg",
+                    url: "/bedroom.jpg", // Mountain view bathroom panorama
                     title: "Bedroom 360°"
                 },
                 {
-                    url: "/bathroom.jpg",
+                    url: "/bathroom.jpg", // Empty apartment
                     title: "Bathroom 360°"
                 },
                 {
-                    url: "/balcony.jpg",
+                    url: "/balcony.jpg", // Empty modern room
                     title: "Balcony 360°"
                 }
             ],
             b27: [
                 {
-                    url: "/living.jpg",
+                    url: "/living.jpg",  // Modern living room panorama
                     title: "Living Room 360°"
                 },
                 {
-                    url: "/kitchen.jpg",
+                    url: "/kitchen.jpg", // Kitchen
                     title: "Kitchen 360°"
                 },
                 {
-                    url: "/bedroom.jpg",
+                    url: "/bedroom.jpg", // Mountain view bathroom panorama
                     title: "Bedroom 360°"
                 },
                 {
-                    url: "/bathroom.jpg",
+                    url: "/bathroom.jpg", // Empty apartment
                     title: "Bathroom 360°"
                 },
                 {
-                    url: "/balcony.jpg",
+                    url: "/balcony.jpg", // Empty modern room
                     title: "Balcony 360°"
                 }
             ],
             b29: [
                 {
-                    url: "/living.jpg",
+                    url: "/living.jpg",  // Modern living room panorama
                     title: "Living Room 360°"
                 },
                 {
-                    url: "/kitchen.jpg",
+                    url: "/kitchen.jpg", // Kitchen
                     title: "Kitchen 360°"
                 },
                 {
-                    url: "/bedroom.jpg",
+                    url: "/bedroom.jpg", // Mountain view bathroom panorama
                     title: "Bedroom 360°"
                 },
                 {
-                    url: "/bathroom.jpg",
+                    url: "/bathroom.jpg", // Empty apartment
                     title: "Bathroom 360°"
                 },
                 {
-                    url: "/balcony.jpg",
+                    url: "/balcony.jpg", // Empty modern room
                     title: "Balcony 360°"
                 }
             ],
             p26: [
                 {
-                    url: "/living.jpg",
+                    url: "/living.jpg",  // Modern living room panorama
                     title: "Living Room 360°"
                 },
                 {
-                    url: "/kitchen.jpg",
+                    url: "/kitchen.jpg", // Kitchen
                     title: "Kitchen 360°"
                 },
                 {
-                    url: "/bedroom.jpg",
+                    url: "/bedroom.jpg", // Mountain view bathroom panorama
                     title: "Bedroom 360°"
                 },
                 {
-                    url: "/bathroom.jpg",
+                    url: "/bathroom.jpg", // Empty apartment
                     title: "Bathroom 360°"
                 },
                 {
-                    url: "/balcony.jpg",
+                    url: "/balcony.jpg", // Empty modern room
                     title: "Balcony 360°"
                 }
             ],
             p21: [
                 {
-                    url: "/living.jpg",
+                    url: "/living.jpg",  // Modern living room panorama
                     title: "Living Room 360°"
                 },
                 {
-                    url: "/kitchen.jpg",
+                    url: "/kitchen.jpg", // Kitchen
                     title: "Kitchen 360°"
                 },
                 {
-                    url: "/bedroom.jpg",
+                    url: "/bedroom.jpg", // Mountain view bathroom panorama
                     title: "Bedroom 360°"
                 },
                 {
-                    url: "/bathroom.jpg",
+                    url: "/bathroom.jpg", // Empty apartment
                     title: "Bathroom 360°"
                 },
                 {
-                    url: "/balcony.jpg",
+                    url: "/balcony.jpg", // Empty modern room
                     title: "Balcony 360°"
                 }
             ],
             p51: [
                 {
-                    url: "/living.jpg",
+                    url: "/living.jpg",  // Modern living room panorama
                     title: "Living Room 360°"
                 },
                 {
-                    url: "/kitchen.jpg",
+                    url: "/kitchen.jpg", // Kitchen
                     title: "Kitchen 360°"
                 },
                 {
-                    url: "/bedroom.jpg",
+                    url: "/bedroom.jpg", // Mountain view bathroom panorama
                     title: "Bedroom 360°"
                 },
                 {
-                    url: "/bathroom.jpg",
+                    url: "/bathroom.jpg", // Empty apartment
                     title: "Bathroom 360°"
                 },
                 {
-                    url: "/balcony.jpg",
+                    url: "/balcony.jpg", // Empty modern room
                     title: "Balcony 360°"
                 }
             ]
@@ -645,17 +645,29 @@ class ApartmentViewer {
     }
 
     loadCurrentPanorama() {
-        if (!this.scene || !this.currentApartment) return;
+        if (!this.scene || !this.currentApartment) {
+            console.warn('Scene or current apartment not initialized');
+            return;
+        }
 
+        // Clear existing panorama
         while (this.scene.children.length > 0) { 
             this.scene.remove(this.scene.children[0]); 
         }
 
         const panoramas = this.panoramas[this.currentApartment];
-        if (!panoramas || panoramas.length === 0) return;
+        if (!panoramas || panoramas.length === 0) {
+            console.warn('No panoramas found for apartment:', this.currentApartment);
+            return;
+        }
 
         const currentPanorama = panoramas[this.currentPanoramaIndex];
-        if (!currentPanorama) return;
+        if (!currentPanorama) {
+            console.warn('No panorama found at index:', this.currentPanoramaIndex);
+            return;
+        }
+
+        console.log('Loading panorama:', currentPanorama.url);
 
         const geometry = new THREE.SphereGeometry(500, 60, 40);
         geometry.scale(-1, 1, 1);
@@ -663,13 +675,16 @@ class ApartmentViewer {
         this.textureLoader.load(
             currentPanorama.url,
             (texture) => {
+                console.log('Successfully loaded texture:', currentPanorama.url);
                 const material = new THREE.MeshBasicMaterial({ map: texture });
                 const sphere = new THREE.Mesh(geometry, material);
                 this.scene.add(sphere);
             },
-            undefined,
-            (err) => {
-                console.error('Error loading panorama:', err);
+            (xhr) => {
+                console.log(`${currentPanorama.url} ${(xhr.loaded / xhr.total * 100)}% loaded`);
+            },
+            (error) => {
+                console.error('Error loading panorama:', currentPanorama.url, error);
             }
         );
     }
