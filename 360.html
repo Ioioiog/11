@@ -340,6 +340,45 @@ class LoadingManager {
 
 class ApartmentViewer {
     constructor() {
+        // Initialization code...
+        this.currentApartment = 'a25'; // Set a default apartment
+        // Other initializations...
+    }
+
+    initializeElements() {
+        this.apartmentSelector = document.getElementById('apartment-selector');
+        if (!this.apartmentSelector) {
+            console.warn('Apartment selector element not found');
+        }
+    }
+
+    initializeApartmentSelector() {
+        if (!this.apartmentSelector) return;
+
+        // Clear existing options
+        this.apartmentSelector.innerHTML = '';
+
+        // Add options for each apartment
+        Object.entries(this.apartments).forEach(([id, apartment]) => {
+            const option = document.createElement('option');
+            option.value = id;
+            option.textContent = `${apartment.code}`;
+            this.apartmentSelector.appendChild(option);
+        });
+
+        // Set initial apartment
+        this.currentApartment = this.apartmentSelector.value || 'a25'; // Ensure a default value
+        this.updateApartmentDisplay();
+    }
+
+    updateApartmentDisplay() {
+        const apartment = this.apartments[this.currentApartment];
+        if (!apartment) {
+            console.warn('Invalid apartment data for:', this.currentApartment);
+            return;
+        }
+
+    constructor() {
         this.apartments = {
             a25: {
                 id: "a25",
