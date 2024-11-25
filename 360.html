@@ -957,8 +957,6 @@ class ApartmentViewer {
         zoomInBtn.disabled = currentZoom <= this.minZoom;
         zoomOutBtn.disabled = currentZoom >= this.maxZoom;
     }
-
-        
         // Add room navigation button handlers
         const roomButtons = document.querySelectorAll('.nav-action-btn');
         roomButtons.forEach(button => {
@@ -994,7 +992,6 @@ class ApartmentViewer {
                 this.handleResize();
             }, 100);
         });
-    }
 
     switchRoom(room) {
         this.currentRoom = room;
