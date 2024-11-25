@@ -135,7 +135,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        z-index: 0;
+        z-index: 1; /* Change from -1 to 1 */
     }
 
     .info-panel {
@@ -644,7 +644,8 @@ class ApartmentViewer {
         this.renderer.domElement.style.position = 'fixed';
         this.renderer.domElement.style.top = '0';
         this.renderer.domElement.style.left = '0';
-        this.renderer.domElement.style.zIndex = '-1';
+        this.renderer.domElement.style.zIndex = '1'; // Change from -1 to 1
+        
         this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
         this.controls.enableZoom = false;
         this.controls.enablePan = false;
