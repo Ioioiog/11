@@ -241,8 +241,7 @@
         background: var(--secondary-color);
     }
 
-    /* Mobile-friendly navbar adjustments */
-    @media screen and (max-width: 768px) {
+    @media (max-width: 768px) {
         .main-navbar {
             padding: 0.5rem;
             flex-direction: column;
@@ -251,27 +250,29 @@
 
         .navbar-controls {
             width: 100%;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
         }
 
         .nav-group {
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 0.5rem;
+            flex-wrap: nowrap;
+            width: 100%;
+            overflow-x: auto;
+            padding: 0 0.5rem;
+            -webkit-overflow-scrolling: touch;
         }
 
         .apartment-select {
-            width: 100%;
-            min-width: unset;
+            min-width: 150px;
+            font-size: 0.8rem;
         }
 
         .nav-action-btn {
-            font-size: 0.75rem;
             padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+            white-space: nowrap;
         }
-    }
 
-    /* Mobile-friendly info panel */
-    @media screen and (max-width: 768px) {
         .info-panel {
             width: 95%;
             bottom: 1rem;
@@ -283,40 +284,20 @@
             gap: 1rem;
         }
 
-        .info-section {
-            padding: 0.25rem;
-        }
-
-        .info-section h3 {
-            font-size: 1rem;
-        }
-
-        .info-section p {
-            font-size: 0.85rem;
-        }
-    }
-
-    /* Mobile-friendly zoom controls */
-    @media screen and (max-width: 768px) {
         .zoom-controls {
             bottom: 1rem;
             right: 1rem;
         }
-
-        .zoom-btn {
-            width: 40px;
-            height: 40px;
-            font-size: 1.2rem;
-        }
     }
 
-    @media (hover: none) and (pointer: coarse) {
-        #360-viewer {
-            cursor: grab;
+    @media (hover: none) {
+        .nav-action-btn:hover {
+            transform: none;
         }
-
-        .zooming-out #360-viewer {
-            cursor: grabbing;
+        
+        .nav-action-btn:active {
+            transform: translateY(-2px);
+            background: var(--secondary-color);
         }
     }
 </style>
@@ -470,7 +451,7 @@ class ApartmentViewer {
                 totalArea: 108.5,
                 description: "Premium waterfront apartment with stunning views",
                 balconyArea: 37.1,
-                price: 1500,
+                price: 1400,
                 photos: [
                     { url: "https://example.com/a25/living.jpg", caption: "Living Room" }
                 ]
@@ -502,7 +483,7 @@ class ApartmentViewer {
                 totalArea: 95.2,
                 description: "Spacious corner unit with wrap-around balcony",
                 balconyArea: 26.7,
-                price: 1200,
+                price: 1350,
                 photos: []
             },
             b29: {
@@ -516,7 +497,7 @@ class ApartmentViewer {
                 totalArea: 72.3,
                 description: "Cozy unit with excellent amenities",
                 balconyArea: 16.5,
-                price: 1200,
+                price: 1150,
                 photos: []
             },
             p26: {
@@ -530,7 +511,7 @@ class ApartmentViewer {
                 totalArea: 115.7,
                 description: "Luxury penthouse with panoramic views",
                 balconyArea: 30.4,
-                price: 1200,
+                price: 1800,
                 photos: []
             },
             p21: {
@@ -544,7 +525,7 @@ class ApartmentViewer {
                 totalArea: 98.4,
                 description: "Corner unit with premium finishes",
                 balconyArea: 26.3,
-                price: 1200,
+                price: 1450,
                 photos: []
             },
             p51: {
@@ -558,7 +539,7 @@ class ApartmentViewer {
                 totalArea: 145.8,
                 description: "Exclusive top floor residence",
                 balconyArea: 35.3,
-                price: 2300,
+                price: 2200,
                 photos: []
             }
         };
@@ -617,6 +598,12 @@ class ApartmentViewer {
         this.controls = null;
         this.textureLoader = new THREE.TextureLoader();
         this.zoomTimer = null; // Initialize zoom timer
+
+        // Add event listeners for resize and orientation change
+        window.addEventListener('resize', () => this.handleResize());
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => this.handleResize(), 100);
+        });
     }
 
     async init() {
@@ -629,6 +616,7 @@ class ApartmentViewer {
             this.bindEvents();
 
             this.setupThreeJS();
+            this.initializeTouchControls(); // Initialize touch controls
             this.loadCurrentPanorama();
         } catch (error) {
             console.error('Initialization error:', error);
@@ -649,20 +637,12 @@ class ApartmentViewer {
         
         // Update OrbitControls initialization
         this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-        this.controls.enableDamping = true;
-        this.controls.dampingFactor = 0.05;
-        this.controls.rotateSpeed = 0.5;
-        this.controls.touchRotate = true;
-        this.controls.touchZoom = true;
-        this.controls.touches = {
-            ONE: THREE.TOUCH.ROTATE,
-            TWO: THREE.TOUCH.DOLLY_PAN
-        };
         this.controls.enableZoom = true;
         this.controls.minDistance = 1;
         this.controls.maxDistance = 50;
         this.controls.zoomSpeed = 1.0;
         this.controls.enablePan = false;
+        this.controls.rotateSpeed = -0.5;
 
         // Add mouse wheel zoom handling
         this.renderer.domElement.addEventListener('wheel', (e) => {
@@ -717,7 +697,7 @@ class ApartmentViewer {
             },
             undefined,
             (err) => {
-                console.error('Error loading panorama:', err);
+                this.handleLoadingError(err);
             }
         );
     }
@@ -828,22 +808,34 @@ class ApartmentViewer {
                 this.controls.zoomOut(1.2); // Changed from dollyOut to zoomOut
             }
         });
-
-        // Add resize event listener
-        window.addEventListener('resize', () => this.handleResize());
-        window.addEventListener('orientationchange', () => {
-            setTimeout(() => this.handleResize(), 100);
-        });
     }
 
-    handleResize() {
-        if (this.camera) {
-            this.camera.aspect = window.innerWidth / window.innerHeight;
-            this.camera.updateProjectionMatrix();
-        }
-        if (this.renderer) {
-            this.renderer.setSize(window.innerWidth, window.innerHeight);
-        }
+    initializeTouchControls() {
+        let touchStartX = 0;
+        let touchStartY = 0;
+        
+        this.renderer.domElement.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        }, false);
+
+        this.renderer.domElement.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const touchEndX = e.touches[0].clientX;
+            const touchEndY = e.touches[0].clientY;
+            
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+            
+            // Update camera rotation based on touch movement
+            if (this.controls) {
+                this.controls.rotateLeft(deltaX * 0.01);
+                this.controls.rotateUp(deltaY * 0.01);
+            }
+            
+            touchStartX = touchEndX;
+            touchStartY = touchEndY;
+        }, false);
     }
 
     switchRoom(room) {
@@ -910,6 +902,38 @@ class ApartmentViewer {
             this.camera.fov = Math.min(this.camera.fov * 1.05, 120); // Limit maximum FOV
             this.camera.updateProjectionMatrix();
         }
+    }
+
+    handleResize() {
+        if (this.camera && this.renderer) {
+            this.camera.aspect = window.innerWidth / window.innerHeight;
+            this.camera.updateProjectionMatrix();
+            this.renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+    }
+
+    handleLoadingError(error) {
+        console.error('Loading error:', error);
+        
+        // Create a simple error message for users
+        const errorDiv = document.createElement('div');
+        errorDiv.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 1000;
+        `;
+        errorDiv.innerHTML = `
+            <h3>Loading Error</h3>
+            <p>Please check your connection and reload the page.</p>
+            <button onclick="location.reload()" style="padding: 10px; margin-top: 10px;">Reload</button>
+        `;
+        document.body.appendChild(errorDiv);
     }
 }
 
