@@ -638,7 +638,6 @@ class ApartmentViewer {
                     title: "Balcony 360°"
                 }
             ]
-        };
         this.currentApartment = null;
         this.currentPanoramaIndex = 0;
         this.currentRoom = 'living'; // Add this line to track current room
@@ -654,12 +653,20 @@ class ApartmentViewer {
             const loadingManager = new LoadingManager();
             await loadingManager.simulateLoading();
 
+            // Setup ThreeJS first
+            this.setupThreeJS();
+
+            // Then initialize UI elements and apartment data
             this.initializeElements();
             this.initializeApartmentSelector();
             this.bindEvents();
 
-            this.setupThreeJS();
-            this.loadCurrentPanorama();
+            // Load initial panorama only after everything is set up
+            if (this.currentApartment) {
+                this.loadCurrentPanorama();
+            } else {
+                console.warn('No apartment selected during initialization');
+            }
         } catch (error) {
             console.error('Initialization error:', error);
         }
@@ -684,8 +691,13 @@ class ApartmentViewer {
     }
 
     loadCurrentPanorama() {
-        if (!this.scene || !this.currentApartment) {
-            console.warn('Scene or current apartment not initialized');
+        if (!this.scene) {
+            console.error('Three.js scene not initialized');
+            return;
+        }
+        
+        if (!this.currentApartment) {
+            console.error('No apartment selected');
             return;
         }
 
@@ -695,14 +707,14 @@ class ApartmentViewer {
         }
 
         const panoramas = this.panoramas[this.currentApartment];
-        if (!panoramas || panoramas.length === 0) {
-            console.warn('No panoramas found for apartment:', this.currentApartment);
+        if (!panoramas || !Array.isArray(panoramas) || panoramas.length === 0) {
+            console.error('No panoramas found for apartment:', this.currentApartment);
             return;
         }
 
         const currentPanorama = panoramas[this.currentPanoramaIndex];
-        if (!currentPanorama) {
-            console.warn('No panorama found at index:', this.currentPanoramaIndex);
+        if (!currentPanorama || !currentPanorama.url) {
+            console.error('Invalid panorama data at index:', this.currentPanoramaIndex);
             return;
         }
 
@@ -714,10 +726,10 @@ class ApartmentViewer {
         this.textureLoader.load(
             currentPanorama.url,
             (texture) => {
-                console.log('Successfully loaded texture:', currentPanorama.url);
                 const material = new THREE.MeshBasicMaterial({ map: texture });
                 const sphere = new THREE.Mesh(geometry, material);
                 this.scene.add(sphere);
+                console.log('Successfully loaded panorama:', currentPanorama.url);
             },
             (xhr) => {
                 console.log(`${currentPanorama.url} ${(xhr.loaded / xhr.total * 100)}% loaded`);
@@ -745,7 +757,10 @@ class ApartmentViewer {
     }
 
     initializeApartmentSelector() {
-        if (!this.apartmentSelector) return;
+        if (!this.apartmentSelector) {
+            console.warn('Apartment selector not found');
+            return;
+        }
         
         // Clear existing options
         this.apartmentSelector.innerHTML = '';
@@ -758,22 +773,29 @@ class ApartmentViewer {
             this.apartmentSelector.appendChild(option);
         });
 
-        // Set initial apartment
-        this.currentApartment = this.apartmentSelector.value;
-        this.updateApartmentDisplay();
+        // Set initial apartment and make sure it's valid
+        this.currentApartment = this.apartmentSelector.value || Object.keys(this.apartments)[0];
+        if (!this.currentApartment) {
+            console.error('Failed to set initial apartment');
+            return;
+        }
+
+        // Update display without loading panorama (will be done in init)
+        this.updateApartmentDisplayOnly();
     }
 
-    updateApartmentDisplay() {
+    updateApartmentDisplayOnly() {
         const apartment = this.apartments[this.currentApartment];
         if (!apartment) {
             console.warn('Invalid apartment data for:', this.currentApartment);
             return;
         }
 
-        // Update UI elements
-        // (Omitted for brevity)
-        
-        this.loadCurrentPanorama();
+        // Update UI elements only
+        // Update info panel if it's visible
+        if (document.getElementById('info-panel').classList.contains('active')) {
+            this.updateInfoPanel();
+        }
     }
 
     bindEvents() {
@@ -792,7 +814,7 @@ class ApartmentViewer {
                 document.querySelector('[data-room="living"]').classList.add('active');
                 
                 // Update display
-                this.updateApartmentDisplay();
+                this.updateApartmentDisplayOnly();
                 
                 // Load new panorama
                 this.loadCurrentPanorama();
