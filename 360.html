@@ -628,21 +628,24 @@ this.panoramas = {
     }
 
     setupThreeJS() {
-        this.scene = new THREE.Scene();
-        this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        this.camera.position.z = 0.1;
-        this.renderer = new THREE.WebGLRenderer();
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(this.renderer.domElement);
-        this.renderer.domElement.style.position = 'fixed';
-        this.renderer.domElement.style.top = '0';
-        this.renderer.domElement.style.left = '0';
-        this.renderer.domElement.style.zIndex = '-1';
-        this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-        this.controls.enableZoom = false;
-        this.controls.enablePan = false;
-        this.controls.rotateSpeed = -0.5;
-        this.animate();
+    this.scene = new THREE.Scene();
+    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    this.camera.position.z = 0.1;
+    this.renderer = new THREE.WebGLRenderer();
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(this.renderer.domElement);
+    this.renderer.domElement.style.position = 'fixed';
+    this.renderer.domElement.style.top = '0';
+    this.renderer.domElement.style.left = '0';
+    this.renderer.domElement.style.zIndex = '-1';
+    this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.enableZoom = true; // Enable zooming
+    this.controls.enablePan = false;
+    this.controls.rotateSpeed = -0.5;
+    this.controls.minPolarAngle = 0; // Set the minimum vertical angle
+    this.controls.maxPolarAngle = Math.PI; // Set the maximum vertical angle
+    this.animate();
+}
     }
 
     loadCurrentPanorama() {
