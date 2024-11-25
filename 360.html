@@ -451,7 +451,7 @@ class ApartmentViewer {
                 totalArea: 108.5,
                 description: "Premium waterfront apartment with stunning views",
                 balconyArea: 37.1,
-                price: 1400,
+                price: 1500,
                 photos: [
                     { url: "https://example.com/a25/living.jpg", caption: "Living Room" }
                 ]
@@ -483,7 +483,7 @@ class ApartmentViewer {
                 totalArea: 95.2,
                 description: "Spacious corner unit with wrap-around balcony",
                 balconyArea: 26.7,
-                price: 1350,
+                price: 1200,
                 photos: []
             },
             b29: {
@@ -497,7 +497,7 @@ class ApartmentViewer {
                 totalArea: 72.3,
                 description: "Cozy unit with excellent amenities",
                 balconyArea: 16.5,
-                price: 1150,
+                price: 1200,
                 photos: []
             },
             p26: {
@@ -511,7 +511,7 @@ class ApartmentViewer {
                 totalArea: 115.7,
                 description: "Luxury penthouse with panoramic views",
                 balconyArea: 30.4,
-                price: 1800,
+                price: 1200,
                 photos: []
             },
             p21: {
@@ -525,7 +525,7 @@ class ApartmentViewer {
                 totalArea: 98.4,
                 description: "Corner unit with premium finishes",
                 balconyArea: 26.3,
-                price: 1450,
+                price: 1200,
                 photos: []
             },
             p51: {
@@ -539,7 +539,7 @@ class ApartmentViewer {
                 totalArea: 145.8,
                 description: "Exclusive top floor residence",
                 balconyArea: 35.3,
-                price: 2200,
+                price: 1800,
                 photos: []
             }
         };
@@ -636,14 +636,64 @@ class ApartmentViewer {
         this.renderer.domElement.style.zIndex = '-1';
         
         // Update OrbitControls initialization
-        this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-        this.controls.enableZoom = true;
-        this.controls.minDistance = 1;
-        this.controls.maxDistance = 50;
-        this.controls.zoomSpeed = 1.0;
-        this.controls.enablePan = false;
-        this.controls.rotateSpeed = -0.5;
+        this.scene = new THREE.Scene();
+    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    this.camera.position.z = 0.1;
+    this.renderer = new THREE.WebGLRenderer();
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(this.renderer.domElement);
+    this.renderer.domElement.style.position = 'fixed';
+    this.renderer.domElement.style.top = '0';
+    this.renderer.domElement.style.left = '0';
+    this.renderer.domElement.style.zIndex = '-1';
+    this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.enableZoom = false;
+    this.controls.enablePan = false;
+    this.controls.rotateSpeed = -0.5;
+    this.animate();
+}
 
+loadCurrentPanorama() {
+    if (!this.scene || !this.currentApartment) return;
+
+    while (this.scene.children.length > 0) { 
+        this.scene.remove(this.scene.children[0]); 
+    }
+
+    const panoramas = this.panoramas[this.currentApartment];
+    if (!panoramas || panoramas.length === 0) return;
+
+    const currentPanorama = panoramas[this.currentPanoramaIndex];
+    if (!currentPanorama) return;
+
+    const geometry = new THREE.SphereGeometry(500, 60, 40);
+    geometry.scale(-1, 1, 1);
+
+    this.textureLoader.load(
+        currentPanorama.url,
+        (texture) => {
+            const material = new THREE.MeshBasicMaterial({ map: texture });
+            const sphere = new THREE.Mesh(geometry, material);
+            this.scene.add(sphere);
+        },
+        undefined,
+        (err) => {
+            console.error('Error loading panorama:', err);
+        }
+    );
+}
+
+animate() {
+    requestAnimationFrame(() => this.animate());
+    
+    if (this.controls) {
+        this.controls.update();
+    }
+    
+    if (this.renderer && this.scene && this.camera) {
+        this.renderer.render(this.scene, this.camera);
+    }
+}
         // Add mouse wheel zoom handling
         this.renderer.domElement.addEventListener('wheel', (e) => {
             e.preventDefault();
