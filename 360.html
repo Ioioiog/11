@@ -1,4 +1,4 @@
-<html><head><base href="/">
+<!DOCTYPE html><html><head><base href="/">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Apartment Delux Virtual Experience</title>
@@ -308,10 +308,16 @@
     }
 </style>
 </head><body>
-<nav class="main-navbar" style="background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(8px);">
+<nav class="main-navbar" style="background: rgba(255, 255, 255, 1); backdrop-filter: blur(8px);">
     <div class="navbar-brand">
-        <img src="https://apartamentdelux.ro/assets/logo-DmiD_IiC.png" alt="Apartment Delux logo" height="32" class="brand-logo">
-        <span class="brand-text">apartamentdelux.ro</span>
+        <img src="https://apartamentdelux.ro/assets/logo-DmiD_IiC.png" alt="Apartment Delux logo" height="64" class="brand-logo">
+        <span class="brand-text">
+            <div style="font-size: 1.2rem; font-weight: bold; color: black; letter-spacing: 0.5px; font-family: 'Segoe UI', system-ui, sans-serif; text-align: center;">apartamentdelux.ro</div>
+            <div style="font-size: 0.7rem; letter-spacing: 1px; color: #FFB088;">
+                BEYOND WALLS<br>
+                EMBRACE YOUR HOME
+            </div>
+        </span>
     </div>
     
     <div class="navbar-controls">
@@ -367,26 +373,10 @@
                 </svg>
                 Info
             </button>
-            <div class="zoom-controls">
-                <button class="nav-action-btn zoom-btn" id="zoom-in">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="8" x2="12" y2="16"></line>
-                        <line x1="8" y1="12" x2="16" y2="12"></line>
-                    </svg>
-                </button>
-                <button class="nav-action-btn zoom-btn" id="zoom-reset">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <path d="M12 8v8"></path>
-                    </svg>
-                </button>
-                <button class="nav-action-btn zoom-btn" id="zoom-out">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="8" y1="12" x2="16" y2="12"></line>
-                    </svg>
-                </button>
+            <div class="zoom-controls" style="position: fixed; bottom: 20px; right: 20px; z-index: 2; background: rgba(255, 255, 255, 0.85); padding: 8px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); display: none; flex-direction: column; gap: 4px;">
+                <button class="nav-action-btn zoom-btn" id="zoom-in" style="width: 32px; height: 32px; padding: 4px;">+</button>
+                <button class="nav-action-btn zoom-btn" id="zoom-reset" style="width: 32px; height: 32px; padding: 4px;">⟲</button>
+                <button class="nav-action-btn zoom-btn" id="zoom-out" style="width: 32px; height: 32px; padding: 4px;">−</button>
             </div>
         </div>
     </div>
@@ -471,7 +461,7 @@ class ApartmentViewer {
                 rooms: 3,
                 usableArea: 71.4,
                 totalArea: 108.5,
-                description: "Premium waterfront apartment with stunning views",
+                description: "Premium apartment with stunning views",
                 balconyArea: 37.1,
                 price: 1500,
                 photos: [
@@ -487,7 +477,7 @@ class ApartmentViewer {
                 rooms: 2,
                 usableArea: 52.4,
                 totalArea: 65,
-                description: "Modern apartment with marina views",
+                description: "Modern apartment",
                 balconyArea: 12.6,
                 price: 1200,
                 photos: [
@@ -531,7 +521,7 @@ class ApartmentViewer {
                 rooms: 4,
                 usableArea: 85.3,
                 totalArea: 115.7,
-                description: "Luxury penthouse with panoramic views",
+                description: "Luxury with panoramic views",
                 balconyArea: 30.4,
                 price: 1200,
                 photos: []
@@ -545,7 +535,7 @@ class ApartmentViewer {
                 rooms: 3,
                 usableArea: 72.1,
                 totalArea: 98.4,
-                description: "Corner unit with premium finishes",
+                description: " unit with premium finishes",
                 balconyArea: 26.3,
                 price: 1200,
                 photos: []
