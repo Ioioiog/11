@@ -1,6 +1,7 @@
-<!DOCTYPE html><html><head><base href="/360">
+
+<html><head><base href="/">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Apartment Delux Virtual Experience</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.0/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -135,7 +136,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
+            z-index: 1; /* Change from -1 to 1 */
         }
     
         .info-panel {
@@ -206,12 +207,85 @@
         .nav-action-btn.info-btn {
             background: var(--accent-color);
         }
+    
+        /* Mobile navbar styles */
+        @media (max-width: 768px) {
+            .main-navbar {
+                flex-direction: column;
+                padding: 0.5rem;
+                gap: 1rem;
+            }
+    
+            .navbar-controls {
+                width: 100%;
+                flex-direction: column;
+                gap: 1rem;
+            }
+    
+            .nav-group {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.5rem;
+            }
+    
+            .apartment-select {
+                width: 100%;
+                min-width: unset;
+            }
+    
+            .nav-action-btn {
+                font-size: 0.75rem;
+                padding: 0.4rem 0.8rem;
+            }
+        }
+    
+        /* Info panel mobile styles */
+        @media (max-width: 768px) {
+            .info-panel {
+                width: 95%;
+                bottom: 1rem;
+                padding: 1rem;
+            }
+    
+            .info-content {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+    
+            .info-section {
+                padding: 0.25rem;
+            }
+    
+            .info-section h3 {
+                font-size: 1rem;
+            }
+    
+            .info-section p {
+                font-size: 0.85rem;
+            }
+        }
+    
+        /* Make sure the viewer is responsive */
+        @media (max-width: 768px) {
+            #360-viewer {
+                height: calc(100vh - 180px); /* Account for taller navbar on mobile */
+                top: 180px;
+            }
+    
+            .brand-logo {
+                height: 24px;
+            }
+    
+            .brand-text {
+                font-size: 1.1rem;
+            }
+        }
     </style>
     </head><body>
     <nav class="main-navbar" style="background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(8px);">
         <div class="navbar-brand">
             <img src="https://apartamentdelux.ro/assets/logo-DmiD_IiC.png" alt="Apartment Delux logo" height="32" class="brand-logo">
-            <span class="brand-text">Apartment Delux</span>
+            <span class="brand-text">apartamentdelux.ro</span>
         </div>
         
         <div class="navbar-controls">
@@ -350,9 +424,9 @@
                     rooms: 3,
                     usableArea: 71.4,
                     totalArea: 108.5,
-                    description: "Premium waterfront apartment with stunning views",
+                    description: "Premium apartment with stunning balcony",
                     balconyArea: 37.1,
-                    price: 1400,
+                    price: 1500,
                     photos: [
                         { url: "https://example.com/a25/living.jpg", caption: "Living Room" }
                     ]
@@ -366,7 +440,7 @@
                     rooms: 2,
                     usableArea: 52.4,
                     totalArea: 65,
-                    description: "Modern apartment with marina views",
+                    description: "Modern apartment",
                     balconyArea: 12.6,
                     price: 1200,
                     photos: [
@@ -382,9 +456,9 @@
                     rooms: 3,
                     usableArea: 68.5,
                     totalArea: 95.2,
-                    description: "Spacious corner unit with wrap-around balcony",
+                    description: "Spacious corner unit with balcony",
                     balconyArea: 26.7,
-                    price: 1350,
+                    price: 1200,
                     photos: []
                 },
                 b29: {
@@ -398,7 +472,7 @@
                     totalArea: 72.3,
                     description: "Cozy unit with excellent amenities",
                     balconyArea: 16.5,
-                    price: 1150,
+                    price: 1200,
                     photos: []
                 },
                 p26: {
@@ -412,7 +486,7 @@
                     totalArea: 115.7,
                     description: "Luxury penthouse with panoramic views",
                     balconyArea: 30.4,
-                    price: 1800,
+                    price: 1200,
                     photos: []
                 },
                 p21: {
@@ -426,7 +500,7 @@
                     totalArea: 98.4,
                     description: "Corner unit with premium finishes",
                     balconyArea: 26.3,
-                    price: 1450,
+                    price: 1200,
                     photos: []
                 },
                 p51: {
@@ -440,52 +514,162 @@
                     totalArea: 145.8,
                     description: "Exclusive top floor residence",
                     balconyArea: 35.3,
-                    price: 2200,
+                    price: 1800,
                     photos: []
                 }
             };
             this.panoramas = {
                 a25: [
                     {
-                        url: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2665&q=80",
+                        url: "/living.jpg",  // Modern living room panorama
                         title: "Living Room 360°"
                     },
                     {
-                        url: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2670&q=80",
+                        url: "/kitchen.jpg", // Kitchen
                         title: "Kitchen 360°"
                     },
                     {
-                        url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+                        url: "/bedroom.jpg", // Mountain view bathroom panorama
                         title: "Bedroom 360°"
                     },
                     {
-                        url: "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+                        url: "/bathroom.jpg", // Empty apartment
                         title: "Bathroom 360°"
                     },
                     {
-                        url: "https://images.unsplash.com/photo-1580237072617-771c3ecc4a24?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+                        url: "/balcony.jpg", // Empty modern room
                         title: "Balcony 360°"
                     }
                 ],
                 b110: [
                     {
-                        url: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2665&q=80",
+                        url: "/living.jpg",  // Modern living room panorama
                         title: "Living Room 360°"
                     },
                     {
-                        url: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2670&q=80",
+                        url: "/kitchen.jpg", // Kitchen
                         title: "Kitchen 360°"
                     },
                     {
-                        url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+                        url: "/bedroom.jpg", // Mountain view bathroom panorama
                         title: "Bedroom 360°"
                     },
                     {
-                        url: "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+                        url: "/bathroom.jpg", // Empty apartment
                         title: "Bathroom 360°"
                     },
                     {
-                        url: "https://images.unsplash.com/photo-1580237072617-771c3ecc4a24?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+                        url: "/balcony.jpg", // Empty modern room
+                        title: "Balcony 360°"
+                    }
+                ],
+                b27: [
+                    {
+                        url: "/living.jpg",  // Modern living room panorama
+                        title: "Living Room 360°"
+                    },
+                    {
+                        url: "/kitchen.jpg", // Kitchen
+                        title: "Kitchen 360°"
+                    },
+                    {
+                        url: "/bedroom.jpg", // Mountain view bathroom panorama
+                        title: "Bedroom 360°"
+                    },
+                    {
+                        url: "/bathroom.jpg", // Empty apartment
+                        title: "Bathroom 360°"
+                    },
+                    {
+                        url: "/balcony.jpg", // Empty modern room
+                        title: "Balcony 360°"
+                    }
+                ],
+                b29: [
+                    {
+                        url: "/living.jpg",  // Modern living room panorama
+                        title: "Living Room 360°"
+                    },
+                    {
+                        url: "/kitchen.jpg", // Kitchen
+                        title: "Kitchen 360°"
+                    },
+                    {
+                        url: "/bedroom.jpg", // Mountain view bathroom panorama
+                        title: "Bedroom 360°"
+                    },
+                    {
+                        url: "/bathroom.jpg", // Empty apartment
+                        title: "Bathroom 360°"
+                    },
+                    {
+                        url: "/balcony.jpg", // Empty modern room
+                        title: "Balcony 360°"
+                    }
+                ],
+                p26: [
+                    {
+                        url: "/living.jpg",  // Modern living room panorama
+                        title: "Living Room 360°"
+                    },
+                    {
+                        url: "/kitchen.jpg", // Kitchen
+                        title: "Kitchen 360°"
+                    },
+                    {
+                        url: "/bedroom.jpg", // Mountain view bathroom panorama
+                        title: "Bedroom 360°"
+                    },
+                    {
+                        url: "/bathroom.jpg", // Empty apartment
+                        title: "Bathroom 360°"
+                    },
+                    {
+                        url: "/balcony.jpg", // Empty modern room
+                        title: "Balcony 360°"
+                    }
+                ],
+                p21: [
+                    {
+                        url: "/living.jpg",  // Modern living room panorama
+                        title: "Living Room 360°"
+                    },
+                    {
+                        url: "/kitchen.jpg", // Kitchen
+                        title: "Kitchen 360°"
+                    },
+                    {
+                        url: "/bedroom.jpg", // Mountain view bathroom panorama
+                        title: "Bedroom 360°"
+                    },
+                    {
+                        url: "/bathroom.jpg", // Empty apartment
+                        title: "Bathroom 360°"
+                    },
+                    {
+                        url: "/balcony.jpg", // Empty modern room
+                        title: "Balcony 360°"
+                    }
+                ],
+                p51: [
+                    {
+                        url: "/living.jpg",  // Modern living room panorama
+                        title: "Living Room 360°"
+                    },
+                    {
+                        url: "/kitchen.jpg", // Kitchen
+                        title: "Kitchen 360°"
+                    },
+                    {
+                        url: "/bedroom.jpg", // Mountain view bathroom panorama
+                        title: "Bedroom 360°"
+                    },
+                    {
+                        url: "/bathroom.jpg", // Empty apartment
+                        title: "Bathroom 360°"
+                    },
+                    {
+                        url: "/balcony.jpg", // Empty modern room
                         title: "Balcony 360°"
                     }
                 ]
@@ -505,12 +689,20 @@
                 const loadingManager = new LoadingManager();
                 await loadingManager.simulateLoading();
     
+                // Setup ThreeJS first
+                this.setupThreeJS();
+    
+                // Then initialize UI elements and apartment data
                 this.initializeElements();
                 this.initializeApartmentSelector();
                 this.bindEvents();
     
-                this.setupThreeJS();
-                this.loadCurrentPanorama();
+                // Load initial panorama only after everything is set up
+                if (this.currentApartment) {
+                    this.loadCurrentPanorama();
+                } else {
+                    console.warn('No apartment selected during initialization');
+                }
             } catch (error) {
                 console.error('Initialization error:', error);
             }
@@ -526,26 +718,58 @@
             this.renderer.domElement.style.position = 'fixed';
             this.renderer.domElement.style.top = '0';
             this.renderer.domElement.style.left = '0';
-            this.renderer.domElement.style.zIndex = '-1';
+            this.renderer.domElement.style.zIndex = '1'; // Change from -1 to 1
+            
             this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
             this.controls.enableZoom = false;
             this.controls.enablePan = false;
             this.controls.rotateSpeed = -0.5;
             this.animate();
+    
+            // Add resize handler
+            window.addEventListener('resize', this.handleResize.bind(this));
+            
+            // Initial resize
+            this.handleResize();
+        }
+    
+        handleResize() {
+            if (this.camera && this.renderer) {
+                this.camera.aspect = window.innerWidth / window.innerHeight;
+                this.camera.updateProjectionMatrix();
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+            }
         }
     
         loadCurrentPanorama() {
-            if (!this.scene || !this.currentApartment) return;
+            if (!this.scene) {
+                console.error('Three.js scene not initialized');
+                return;
+            }
+            
+            if (!this.currentApartment) {
+                console.error('No apartment selected');
+                return;
+            }
     
+            // Clear existing panorama
             while (this.scene.children.length > 0) { 
                 this.scene.remove(this.scene.children[0]); 
             }
     
             const panoramas = this.panoramas[this.currentApartment];
-            if (!panoramas || panoramas.length === 0) return;
+            if (!panoramas || !Array.isArray(panoramas) || panoramas.length === 0) {
+                console.error('No panoramas found for apartment:', this.currentApartment);
+                return;
+            }
     
             const currentPanorama = panoramas[this.currentPanoramaIndex];
-            if (!currentPanorama) return;
+            if (!currentPanorama || !currentPanorama.url) {
+                console.error('Invalid panorama data at index:', this.currentPanoramaIndex);
+                return;
+            }
+    
+            console.log('Loading panorama:', currentPanorama.url);
     
             const geometry = new THREE.SphereGeometry(500, 60, 40);
             geometry.scale(-1, 1, 1);
@@ -556,24 +780,31 @@
                     const material = new THREE.MeshBasicMaterial({ map: texture });
                     const sphere = new THREE.Mesh(geometry, material);
                     this.scene.add(sphere);
+                    console.log('Successfully loaded panorama:', currentPanorama.url);
                 },
-                undefined,
-                (err) => {
-                    console.error('Error loading panorama:', err);
+                (xhr) => {
+                    console.log(`${currentPanorama.url} ${(xhr.loaded / xhr.total * 100)}% loaded`);
+                },
+                (error) => {
+                    console.error('Error loading panorama:', currentPanorama.url, error);
                 }
             );
         }
     
         animate() {
-            requestAnimationFrame(() => this.animate());
+            const animateLoop = () => {
+                requestAnimationFrame(animateLoop);
+                
+                if (this.controls) {
+                    this.controls.update();
+                }
+                
+                if (this.renderer && this.scene && this.camera) {
+                    this.renderer.render(this.scene, this.camera);
+                }
+            };
             
-            if (this.controls) {
-                this.controls.update();
-            }
-            
-            if (this.renderer && this.scene && this.camera) {
-                this.renderer.render(this.scene, this.camera);
-            }
+            animateLoop();
         }
     
         initializeElements() {
@@ -581,7 +812,10 @@
         }
     
         initializeApartmentSelector() {
-            if (!this.apartmentSelector) return;
+            if (!this.apartmentSelector) {
+                console.warn('Apartment selector not found');
+                return;
+            }
             
             // Clear existing options
             this.apartmentSelector.innerHTML = '';
@@ -594,22 +828,29 @@
                 this.apartmentSelector.appendChild(option);
             });
     
-            // Set initial apartment
-            this.currentApartment = this.apartmentSelector.value;
-            this.updateApartmentDisplay();
+            // Set initial apartment and make sure it's valid
+            this.currentApartment = this.apartmentSelector.value || Object.keys(this.apartments)[0];
+            if (!this.currentApartment) {
+                console.error('Failed to set initial apartment');
+                return;
+            }
+    
+            // Update display without loading panorama (will be done in init)
+            this.updateApartmentDisplayOnly();
         }
     
-        updateApartmentDisplay() {
+        updateApartmentDisplayOnly() {
             const apartment = this.apartments[this.currentApartment];
             if (!apartment) {
                 console.warn('Invalid apartment data for:', this.currentApartment);
                 return;
             }
     
-            // Update UI elements
-            // (Omitted for brevity)
-            
-            this.loadCurrentPanorama();
+            // Update UI elements only
+            // Update info panel if it's visible
+            if (document.getElementById('info-panel').classList.contains('active')) {
+                this.updateInfoPanel();
+            }
         }
     
         bindEvents() {
@@ -628,7 +869,7 @@
                     document.querySelector('[data-room="living"]').classList.add('active');
                     
                     // Update display
-                    this.updateApartmentDisplay();
+                    this.updateApartmentDisplayOnly();
                     
                     // Load new panorama
                     this.loadCurrentPanorama();
@@ -654,6 +895,21 @@
     
             document.getElementById('info-close').addEventListener('click', () => {
                 document.getElementById('info-panel').classList.remove('active');
+            });
+    
+            // Add touch event handling
+            if ('ontouchstart' in window) {
+                this.controls.enableDamping = true;
+                this.controls.dampingFactor = 0.05;
+                this.controls.rotateSpeed = 0.5;
+                this.controls.autoRotate = false;
+            }
+    
+            // Handle orientation change
+            window.addEventListener('orientationchange', () => {
+                setTimeout(() => {
+                    this.handleResize();
+                }, 100);
             });
         }
     
@@ -718,3 +974,4 @@
     </script>
     
     </body></html>
+    

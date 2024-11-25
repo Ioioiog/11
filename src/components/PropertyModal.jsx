@@ -46,7 +46,7 @@ Corp: ${property.details.building}
               <div>
                 <h2 className="text-2xl font-bold text-gray-900">{property.title}</h2>
                 <div className="flex items-center text-gray-600 mt-1">
-                  <MapPin size={18} className="mr-1" />
+                  <MapPin size={18} className="mr-1 text-red-500" />
                   <span>{property.location.address}</span>
                 </div>
               </div>
