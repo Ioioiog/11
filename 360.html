@@ -1,4 +1,3 @@
-
 <html><head><base href="/">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -208,7 +207,22 @@
         background: var(--accent-color);
     }
 
-    /* Mobile navbar styles */
+    /* Zoom controls styles */
+    .zoom-controls {
+        display: flex;
+        gap: 0.5rem;
+        margin-left: 1rem;
+    }
+
+    .zoom-btn {
+        padding: 0.5rem;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     @media (max-width: 768px) {
         .main-navbar {
             flex-direction: column;
@@ -236,6 +250,18 @@
         .nav-action-btn {
             font-size: 0.75rem;
             padding: 0.4rem 0.8rem;
+        }
+
+        .zoom-controls {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            margin: 0;
+            flex-direction: column;
+            background: rgba(255, 255, 255, 0.85);
+            padding: 0.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
     }
 
@@ -341,6 +367,27 @@
                 </svg>
                 Info
             </button>
+            <div class="zoom-controls">
+                <button class="nav-action-btn zoom-btn" id="zoom-in">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+                </button>
+                <button class="nav-action-btn zoom-btn" id="zoom-reset">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 8v8"></path>
+                    </svg>
+                </button>
+                <button class="nav-action-btn zoom-btn" id="zoom-out">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+                </button>
+            </div>
         </div>
     </div>
 </nav>
@@ -424,7 +471,7 @@ class ApartmentViewer {
                 rooms: 3,
                 usableArea: 71.4,
                 totalArea: 108.5,
-                description: "Premium apartment with stunning balcony",
+                description: "Premium waterfront apartment with stunning views",
                 balconyArea: 37.1,
                 price: 1500,
                 photos: [
@@ -440,7 +487,7 @@ class ApartmentViewer {
                 rooms: 2,
                 usableArea: 52.4,
                 totalArea: 65,
-                description: "Modern apartment",
+                description: "Modern apartment with marina views",
                 balconyArea: 12.6,
                 price: 1200,
                 photos: [
@@ -456,7 +503,7 @@ class ApartmentViewer {
                 rooms: 3,
                 usableArea: 68.5,
                 totalArea: 95.2,
-                description: "Spacious corner unit with balcony",
+                description: "Spacious corner unit with wrap-around balcony",
                 balconyArea: 26.7,
                 price: 1200,
                 photos: []
@@ -682,6 +729,11 @@ class ApartmentViewer {
         this.renderer = null;
         this.controls = null;
         this.textureLoader = new THREE.TextureLoader();
+
+        // Add these properties to the ApartmentViewer constructor
+        this.minZoom = 50;
+        this.maxZoom = 100;
+        this.currentZoom = 75;
     }
 
     async init() {
@@ -721,10 +773,28 @@ class ApartmentViewer {
         this.renderer.domElement.style.zIndex = '1'; // Change from -1 to 1
         
         this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-        this.controls.enableZoom = false;
-        this.controls.enablePan = false;
+        this.controls.enableZoom = true;
+        this.controls.minDistance = 0.1; // Min zoom level
+        this.controls.maxDistance = 2;   // Max zoom level
+        this.controls.enablePan = true;
+        this.controls.touches = {
+            ONE: THREE.TOUCH.ROTATE,
+            TWO: THREE.TOUCH.DOLLY_PAN
+        };
         this.controls.rotateSpeed = -0.5;
         this.animate();
+
+        // Add event listeners for zoom controls
+        document.getElementById('zoom-in').addEventListener('click', () => this.handleZoom('in'));
+        document.getElementById('zoom-out').addEventListener('click', () => this.handleZoom('out'));
+        document.getElementById('zoom-reset').addEventListener('click', () => this.resetZoom());
+        
+        // Add wheel event listener for smooth zoom
+        this.renderer.domElement.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const delta = e.deltaY * -0.01;
+            this.handleZoom(delta > 0 ? 'in' : 'out', Math.abs(delta));
+        });
 
         // Add resize handler
         window.addEventListener('resize', this.handleResize.bind(this));
@@ -797,6 +867,15 @@ class ApartmentViewer {
             
             if (this.controls) {
                 this.controls.update();
+                
+                // Ensure zoom stays within bounds
+                if (this.camera.fov < this.minZoom) {
+                    this.camera.fov = this.minZoom;
+                    this.camera.updateProjectionMatrix();
+                } else if (this.camera.fov > this.maxZoom) {
+                    this.camera.fov = this.maxZoom;
+                    this.camera.updateProjectionMatrix();
+                }
             }
             
             if (this.renderer && this.scene && this.camera) {
@@ -805,6 +884,30 @@ class ApartmentViewer {
         };
         
         animateLoop();
+    }
+
+    handleZoom(direction, factor = 1) {
+        const zoomSpeed = 5 * factor;
+        if (direction === 'in' && this.currentZoom < this.maxZoom) {
+            this.currentZoom = Math.min(this.maxZoom, this.currentZoom + zoomSpeed);
+        } else if (direction === 'out' && this.currentZoom > this.minZoom) {
+            this.currentZoom = Math.max(this.minZoom, this.currentZoom - zoomSpeed);
+        }
+        
+        // Update camera
+        this.camera.fov = this.currentZoom;
+        this.camera.updateProjectionMatrix();
+    }
+
+    resetZoom() {
+        this.currentZoom = 75; // Default zoom level
+        this.camera.fov = this.currentZoom;
+        this.camera.updateProjectionMatrix();
+        
+        // Reset position
+        this.camera.position.set(0, 0, 0.1);
+        this.controls.target.set(0, 0, 0);
+        this.controls.update();
     }
 
     initializeElements() {
