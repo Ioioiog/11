@@ -1,6 +1,6 @@
-<html><head><base href="/360">
+<html><head><base href="/">
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Apartment Delux Virtual Experience</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.0/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -136,11 +136,6 @@
         width: 100%;
         height: 100%;
         z-index: -1;
-        cursor: zoom-in;
-    }
-
-    .zooming-out #360-viewer {
-        cursor: zoom-out;
     }
 
     .info-panel {
@@ -211,114 +206,6 @@
     .nav-action-btn.info-btn {
         background: var(--accent-color);
     }
-
-    .zoom-controls {
-        position: fixed;
-        bottom: 10rem;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(12px);
-        padding: 0.5rem;
-        border-radius: 8px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-        z-index: 100;
-        display: flex;
-        gap: 1rem;
-    }
-
-    .zoom-btn {
-        padding: 0.5rem;
-        border: none;
-        border-radius: 6px;
-        background: var(--primary-color);
-        color: white;
-        cursor: pointer;
-        transition: background 0.3s ease;
-    }
-
-    .zoom-btn:hover {
-        background: var(--secondary-color);
-    }
-
-    /* Mobile-friendly navbar adjustments */
-    @media screen and (max-width: 768px) {
-        .main-navbar {
-            padding: 0.5rem;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .navbar-controls {
-            width: 100%;
-        }
-
-        .nav-group {
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .apartment-select {
-            width: 100%;
-            min-width: unset;
-        }
-
-        .nav-action-btn {
-            font-size: 0.75rem;
-            padding: 0.4rem 0.8rem;
-        }
-    }
-
-    /* Mobile-friendly info panel */
-    @media screen and (max-width: 768px) {
-        .info-panel {
-            width: 95%;
-            bottom: 1rem;
-            padding: 1rem;
-        }
-
-        .info-content {
-            grid-template-columns: 1fr;
-            gap: 1rem;
-        }
-
-        .info-section {
-            padding: 0.25rem;
-        }
-
-        .info-section h3 {
-            font-size: 1rem;
-        }
-
-        .info-section p {
-            font-size: 0.85rem;
-        }
-    }
-
-    /* Mobile-friendly zoom controls */
-    @media screen and (max-width: 768px) {
-        .zoom-controls {
-            bottom: 1rem;
-            right: 1rem;
-        }
-
-        .zoom-btn {
-            width: 40px;
-            height: 40px;
-            font-size: 1.2rem;
-        }
-    }
-
-    @media (hover: none) and (pointer: coarse) {
-        #360-viewer {
-            cursor: grab;
-        }
-
-        .zooming-out #360-viewer {
-            cursor: grabbing;
-        }
-    }
 </style>
 </head><body>
 <nav class="main-navbar" style="background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(8px);">
@@ -385,11 +272,6 @@
 </nav>
 
 <div id="360-viewer"></div>
-
-<div class="zoom-controls" style="position: fixed; bottom: 2rem; right: 2rem; transform: none; left: auto;">
-    <button class="zoom-btn" id="zoom-in">+</button>
-    <button class="zoom-btn" id="zoom-out">-</button>
-</div>
 
 <div class="info-panel" id="info-panel">
     <button class="info-close" id="info-close">
@@ -470,7 +352,7 @@ class ApartmentViewer {
                 totalArea: 108.5,
                 description: "Premium waterfront apartment with stunning views",
                 balconyArea: 37.1,
-                price: 1500,
+                price: 1200,
                 photos: [
                     { url: "https://example.com/a25/living.jpg", caption: "Living Room" }
                 ]
@@ -528,7 +410,7 @@ class ApartmentViewer {
                 rooms: 4,
                 usableArea: 85.3,
                 totalArea: 115.7,
-                description: "Luxury penthouse with panoramic views",
+                description: "Luxury apartment with panoramic views",
                 balconyArea: 30.4,
                 price: 1200,
                 photos: []
@@ -558,53 +440,135 @@ class ApartmentViewer {
                 totalArea: 145.8,
                 description: "Exclusive top floor residence",
                 balconyArea: 35.3,
-                price: 2300,
+                price: 1800,
                 photos: []
             }
         };
         this.panoramas = {
             a25: [
                 {
-                    url: "https://apartamentdelux.ro/assets/1-CjqmLx0c.jpg",
+                    url: "https://github.com/Ioioiog/11/raw/gh-pages/assets/images/properties/a25/1.jpg",
                     title: "Living Room 360°"
                 },
                 {
-                    url: "https://apartamentdelux.ro/assets/3-DcEvIpM0.jpg",
+                    url: "https://github.com/Ioioiog/11/raw/gh-pages/assets/images/properties/a25/2.jpg", 
                     title: "Kitchen 360°"
                 },
                 {
-                    url: "https://apartamentdelux.ro/assets/3-DcEvIpM0.jpg",
+                    url: "https://github.com/Ioioiog/11/raw/gh-pages/assets/images/properties/a25/3.jpg",
                     title: "Bedroom 360°"
                 },
                 {
-                    url: "https://apartamentdelux.ro/assets/3-DcEvIpM0.jpg",
+                    url: "https://github.com/Ioioiog/11/raw/gh-pages/assets/images/properties/a25/4.jpg",
                     title: "Bathroom 360°"
-                },
-                {
-                    url: "https://apartamentdelux.ro/assets/3-DcEvIpM0.jpg",
-                    title: "Balcony 360°"
                 }
             ],
             b110: [
                 {
-                    url: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2665&q=80",
+                    url: "https://github.com/Ioioiog/11/raw/gh-pages/assets/images/properties/b110/1.jpg",
                     title: "Living Room 360°"
                 },
                 {
-                    url: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2670&q=80",
+                    url: "https://github.com/Ioioiog/11/raw/gh-pages/assets/images/properties/b110/2.jpg",
                     title: "Kitchen 360°"
                 },
                 {
-                    url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+                    url: "https://github.com/Ioioiog/11/raw/gh-pages/assets/images/properties/b110/3.jpg",
                     title: "Bedroom 360°"
                 },
                 {
-                    url: "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+                    url: "https://github.com/Ioioiog/11/raw/gh-pages/assets/images/properties/b110/4.jpg",
                     title: "Bathroom 360°"
+                }
+            ],
+            b27: [
+                {
+                    url: "https://github.com/Ioioiog/11/raw/gh-pages/assets/images/properties/b27/1.jpg",
+                    title: "Living Room 360°"
                 },
                 {
-                    url: "https://images.unsplash.com/photo-1580237072617-771c3ecc4a24?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
-                    title: "Balcony 360°"
+                    url: "https://github.com/Ioioiog/11/raw/gh-pages/assets/images/properties/b27/2.jpg",
+                    title: "Kitchen 360°"
+                },
+                {
+                    url: "https://github.com/Ioioiog/11/raw/gh-pages/assets/images/properties/b27/3.jpg",
+                    title: "Bedroom 360°"
+                },
+                {
+                    url: "https://github.com/Ioioiog/11/raw/gh-pages/assets/images/properties/b27/4.jpg",
+                    title: "Bathroom 360°"
+                }
+            ],
+            b29: [
+                {
+                    url: "https://github.com/Ioioiog/11/raw/gh-pages/assets/images/properties/b29/1.jpg",
+                    title: "Living Room 360°"
+                },
+                {
+                    url: "https://github.com/Ioioiog/11/raw/gh-pages/assets/images/properties/b29/2.jpg",
+                    title: "Kitchen 360°"
+                },
+                {
+                    url: "https://github.com/Ioioiog/11/raw/gh-pages/assets/images/properties/b29/3.jpg",
+                    title: "Bedroom 360°"
+                },
+                {
+                    url: "https://github.com/Ioioiog/11/raw/gh-pages/assets/images/properties/b29/4.jpg",
+                    title: "Bathroom 360°"
+                }
+            ],
+            prima26: [
+                {
+                    url: "https://github.com/Ioioiog/11/raw/gh-pages/assets/images/properties/prima26/1.jpg",
+                    title: "Living Room 360°"
+                },
+                {
+                    url: "https://github.com/Ioioiog/11/raw/gh-pages/assets/images/properties/prima26/2.jpg",
+                    title: "Kitchen 360°"
+                },
+                {
+                    url: "https://github.com/Ioioiog/11/raw/gh-pages/assets/images/properties/prima26/3.jpg",
+                    title: "Bedroom 360°"
+                },
+                {
+                    url: "https://github.com/Ioioiog/11/raw/gh-pages/assets/images/properties/prima26/4.jpg",
+                    title: "Bathroom 360°"
+                }
+            ],
+            prima21: [
+                {
+                    url: "https://github.com/Ioioiog/11/raw/gh-pages/assets/images/properties/prima21/1.jpg",
+                    title: "Living Room 360°"
+                },
+                {
+                    url: "https://github.com/Ioioiog/11/raw/gh-pages/assets/images/properties/prima21/2.jpg",
+                    title: "Kitchen 360°"
+                },
+                {
+                    url: "https://github.com/Ioioiog/11/raw/gh-pages/assets/images/properties/prima21/3.jpg",
+                    title: "Bedroom 360°"
+                },
+                {
+                    url: "https://github.com/Ioioiog/11/raw/gh-pages/assets/images/properties/prima21/4.jpg",
+                    title: "Bathroom 360°"
+                }
+            ],
+            prima51: [
+                {
+                    url: "https://github.com/Ioioiog/11/raw/gh-pages/assets/images/properties/prima51/1.jpg",
+                    title: "Living Room 360°"
+                },
+                {
+                    url: "https://github.com/Ioioiog/11/raw/gh-pages/assets/images/properties/prima51/2.jpg",
+                    title: "Kitchen 360°"
+                },
+                {
+                    url: "https://github.com/Ioioiog/11/raw/gh-pages/assets/images/properties/prima51/3.jpg",
+                    title: "Bedroom 360°"
+                },
+                {
+                    url: "https://github.com/Ioioiog/11/raw/gh-pages/assets/images/properties/prima51/4.jpg",
+                    title: "Bathroom 360°"
                 }
             ]
         };
@@ -616,7 +580,6 @@ class ApartmentViewer {
         this.renderer = null;
         this.controls = null;
         this.textureLoader = new THREE.TextureLoader();
-        this.zoomTimer = null; // Initialize zoom timer
     }
 
     async init() {
@@ -646,49 +609,10 @@ class ApartmentViewer {
         this.renderer.domElement.style.top = '0';
         this.renderer.domElement.style.left = '0';
         this.renderer.domElement.style.zIndex = '-1';
-        
-        // Update OrbitControls initialization
         this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-        this.controls.enableDamping = true;
-        this.controls.dampingFactor = 0.05;
-        this.controls.rotateSpeed = 0.5;
-        this.controls.touchRotate = true;
-        this.controls.touchZoom = true;
-        this.controls.touches = {
-            ONE: THREE.TOUCH.ROTATE,
-            TWO: THREE.TOUCH.DOLLY_PAN
-        };
-        this.controls.enableZoom = true;
-        this.controls.minDistance = 1;
-        this.controls.maxDistance = 50;
-        this.controls.zoomSpeed = 1.0;
+        this.controls.enableZoom = false;
         this.controls.enablePan = false;
-
-        // Add mouse wheel zoom handling
-        this.renderer.domElement.addEventListener('wheel', (e) => {
-            e.preventDefault();
-            
-            if (e.deltaY < 0) {
-                // Scrolling up - zoom in
-                this.zoomIn();
-                document.body.classList.remove('zooming-out');
-            } else {
-                // Scrolling down - zoom out
-                this.zoomOut();
-                document.body.classList.add('zooming-out');
-            }
-            
-            // Remove zooming-out class after a short delay
-            clearTimeout(this.zoomTimer);
-            this.zoomTimer = setTimeout(() => {
-                document.body.classList.remove('zooming-out');
-            }, 150);
-        }, { passive: false });
-
-        // Add zoom methods to controls
-        this.controls.zoomIn = () => this.zoomIn();
-        this.controls.zoomOut = () => this.zoomOut();
-        
+        this.controls.rotateSpeed = -0.5;
         this.animate();
     }
 
@@ -736,8 +660,6 @@ class ApartmentViewer {
 
     initializeElements() {
         this.apartmentSelector = document.getElementById('apartment-selector');
-        this.zoomInButton = document.getElementById('zoom-in');
-        this.zoomOutButton = document.getElementById('zoom-out');
     }
 
     initializeApartmentSelector() {
@@ -815,35 +737,6 @@ class ApartmentViewer {
         document.getElementById('info-close').addEventListener('click', () => {
             document.getElementById('info-panel').classList.remove('active');
         });
-
-        // Update these zoom button handlers
-        this.zoomInButton.addEventListener('click', () => {
-            if (this.controls) {
-                this.controls.zoomIn(1.2); // Changed from dollyIn to zoomIn
-            }
-        });
-
-        this.zoomOutButton.addEventListener('click', () => {
-            if (this.controls) {
-                this.controls.zoomOut(1.2); // Changed from dollyOut to zoomOut
-            }
-        });
-
-        // Add resize event listener
-        window.addEventListener('resize', () => this.handleResize());
-        window.addEventListener('orientationchange', () => {
-            setTimeout(() => this.handleResize(), 100);
-        });
-    }
-
-    handleResize() {
-        if (this.camera) {
-            this.camera.aspect = window.innerWidth / window.innerHeight;
-            this.camera.updateProjectionMatrix();
-        }
-        if (this.renderer) {
-            this.renderer.setSize(window.innerWidth, window.innerHeight);
-        }
     }
 
     switchRoom(room) {
@@ -896,20 +789,6 @@ class ApartmentViewer {
         document.getElementById('apartment-features').textContent = `Balcony Area: ${apartment.balconyArea}m²`;
         document.getElementById('apartment-location').textContent = `Building ${apartment.building}, Floor ${apartment.floor}`;
         document.getElementById('apartment-price').textContent = `€${apartment.price}/month`;
-    }
-
-    zoomIn() {
-        if (this.camera) {
-            this.camera.fov = Math.max(this.camera.fov * 0.95, 30); // Limit minimum FOV
-            this.camera.updateProjectionMatrix();
-        }
-    }
-
-    zoomOut() {
-        if (this.camera) {
-            this.camera.fov = Math.min(this.camera.fov * 1.05, 120); // Limit maximum FOV
-            this.camera.updateProjectionMatrix();
-        }
     }
 }
 
