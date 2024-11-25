@@ -1,0 +1,720 @@
+<!DOCTYPE html><html><head><base href="/">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apartment Delux Virtual Experience</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.0/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.2/marked.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #FF9966;
+            --secondary-color: #FF7733;
+            --accent-color: #4A4A4A;
+            --text-color: #333333;
+            --background-color: #fcf6f6;
+            --shadow-color: rgba(74, 74, 74, 0.2);
+            --transition-duration: 0.3s;
+        }
+    
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+    
+        body {
+            background: var(--background-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+    
+        .main-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+    
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+    
+        .brand-logo {
+            height: 32px;
+            width: auto;
+            object-fit: contain;
+        }
+    
+        .brand-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+    
+        .navbar-controls {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+    
+        .nav-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+    
+        .apartment-select {
+            min-width: 200px;
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 0.875rem;
+        }
+    
+        .nav-action-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary-color);
+            color: white;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+    
+        .nav-action-btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+    
+        .nav-action-btn.active {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    
+        .nav-action-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 120%;
+            height: 120%;
+            background: rgba(255,255,255,0.2);
+            transform: translate(-50%, -50%) scale(0);
+            border-radius: 50%;
+            transition: transform 0.4s ease-out;
+        }
+    
+        .nav-action-btn:active::after {
+            transform: translate(-50%, -50%) scale(1);
+        }
+    
+        #360-viewer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+    
+        .info-panel {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+            width: 90%;
+            max-width: 800px;
+            display: none; /* Hidden by default */
+            animation: slideUp 0.3s ease-out;
+        }
+    
+        .info-panel.active {
+            display: block;
+        }
+    
+        .info-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+    
+        .info-section {
+            padding: 0.5rem;
+        }
+    
+        .info-section h3 {
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+    
+        .info-section p {
+            color: var(--text-color);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+    
+        .info-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            color: var(--accent-color);
+        }
+    
+        @keyframes slideUp {
+            from {
+                transform: translate(-50%, 100%);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, 0);
+                opacity: 1;
+            }
+        }
+    
+        .nav-action-btn.info-btn {
+            background: var(--accent-color);
+        }
+    </style>
+    </head><body>
+    <nav class="main-navbar" style="background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(8px);">
+        <div class="navbar-brand">
+            <img src="https://apartamentdelux.ro/assets/logo-DmiD_IiC.png" alt="Apartment Delux logo" height="32" class="brand-logo">
+            <span class="brand-text">apartmentdelux.ro</span>
+        </div>
+        
+        <div class="navbar-controls">
+            <div class="nav-group">
+                <select class="apartment-select" id="apartment-selector">
+                    <option value="a25">Yacht A.2.5</option>
+                    <option value="b110">Yacht B.1.10</option>
+                    <option value="b27">Yacht B.2.7</option>
+                    <option value="b29">Yacht B.2.9</option>
+                    <option value="p26">Prima 26</option>
+                    <option value="p21">Prima 21</option>
+                    <option value="p51">Prima 51</option>
+                </select>
+                
+                <button class="nav-action-btn" data-room="living">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    </svg>
+                    Living
+                </button>
+                <button class="nav-action-btn" data-room="kitchen">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 3h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4"></path>
+                    </svg>
+                    Kitchen
+                </button>
+                <button class="nav-action-btn" data-room="bedroom">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14"></path>
+                    </svg>
+                    Bedroom
+                </button>
+                <button class="nav-action-btn" data-room="bathroom">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 22h16"></path>
+                        <path d="M4 12h16"></path>
+                    </svg>
+                    Bathroom
+                </button>
+                <button class="nav-action-btn" data-room="balcony">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <path d="M8 4v16"></path>
+                        <path d="M16 4v16"></path>
+                    </svg>
+                    Balcony
+                </button>
+                <button class="nav-action-btn info-btn" id="info-toggle">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12" y2="8"></line>
+                    </svg>
+                    Info
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div id="360-viewer"></div>
+    
+    <div class="info-panel" id="info-panel">
+        <button class="info-close" id="info-close">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+        <div class="info-content">
+            <div class="info-section">
+                <h3>Apartment Details</h3>
+                <p id="apartment-code"></p>
+                <p id="apartment-rooms"></p>
+                <p id="apartment-area"></p>
+            </div>
+            <div class="info-section">
+                <h3>Features</h3>
+                <p id="apartment-features"></p>
+            </div>
+            <div class="info-section">
+                <h3>Location</h3>
+                <p id="apartment-location"></p>
+            </div>
+            <div class="info-section">
+                <h3>Price</h3>
+                <p id="apartment-price"></p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    class LoadingManager {
+        constructor() {
+            this.progressBar = document.querySelector('.progress-bar');
+            this.loadingStatus = document.getElementById('loading-status');
+        }
+    
+        async simulateLoading() {
+            const steps = [
+                { progress: 20, message: "Loading assets..." },
+                { progress: 40, message: "Initializing 3D engine..." },
+                { progress: 60, message: "Loading apartment data..." },
+                { progress: 80, message: "Preparing interface..." },
+                { progress: 100, message: "Ready!" }
+            ];
+    
+            for (const step of steps) {
+                await this.updateProgress(step.progress, step.message);
+            }
+        }
+    
+        async updateProgress(progress, message) {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    if (this.progressBar) {
+                        this.progressBar.style.width = `${progress}%`;
+                    }
+                    if (this.loadingStatus) {
+                        this.loadingStatus.textContent = message;
+                    }
+                    resolve();
+                }, 500);
+            });
+        }
+    }
+    
+    class ApartmentViewer {
+        constructor() {
+            this.apartments = {
+                a25: {
+                    id: "a25",
+                    code: "Yacht A.2.5",
+                    building: "Yacht A",
+                    floor: 2,
+                    unit: 5,
+                    rooms: 3,
+                    usableArea: 71.4,
+                    totalArea: 108.5,
+                    description: "Premium waterfront apartment with stunning views",
+                    balconyArea: 37.1,
+                    price: 1400,
+                    photos: [
+                        { url: "https://example.com/a25/living.jpg", caption: "Living Room" }
+                    ]
+                },
+                b110: {
+                    id: "b110",
+                    code: "Yacht B.1.10",
+                    building: "Yacht B", 
+                    floor: 1,
+                    unit: 10,
+                    rooms: 2,
+                    usableArea: 52.4,
+                    totalArea: 65,
+                    description: "Modern apartment with marina views",
+                    balconyArea: 12.6,
+                    price: 1200,
+                    photos: [
+                        { url: "https://example.com/b110/living.jpg", caption: "Living Area" }
+                    ]
+                },
+                b27: {
+                    id: "b27",
+                    code: "Yacht B.2.7",
+                    building: "Yacht B",
+                    floor: 2,
+                    unit: 7,
+                    rooms: 3,
+                    usableArea: 68.5,
+                    totalArea: 95.2,
+                    description: "Spacious corner unit with wrap-around balcony",
+                    balconyArea: 26.7,
+                    price: 1350,
+                    photos: []
+                },
+                b29: {
+                    id: "b29", 
+                    code: "Yacht B.2.9",
+                    building: "Yacht B",
+                    floor: 2,
+                    unit: 9,
+                    rooms: 2,
+                    usableArea: 55.8,
+                    totalArea: 72.3,
+                    description: "Cozy unit with excellent amenities",
+                    balconyArea: 16.5,
+                    price: 1150,
+                    photos: []
+                },
+                p26: {
+                    id: "p26",
+                    code: "Prima 26",
+                    building: "Prima",
+                    floor: 2,
+                    unit: 6,
+                    rooms: 4,
+                    usableArea: 85.3,
+                    totalArea: 115.7,
+                    description: "Luxury penthouse with panoramic views",
+                    balconyArea: 30.4,
+                    price: 1800,
+                    photos: []
+                },
+                p21: {
+                    id: "p21",
+                    code: "Prima 21",
+                    building: "Prima",
+                    floor: 2,
+                    unit: 1,
+                    rooms: 3,
+                    usableArea: 72.1,
+                    totalArea: 98.4,
+                    description: "Corner unit with premium finishes",
+                    balconyArea: 26.3,
+                    price: 1450,
+                    photos: []
+                },
+                p51: {
+                    id: "p51",
+                    code: "Prima 51",
+                    building: "Prima",
+                    floor: 5,
+                    unit: 1,
+                    rooms: 5,
+                    usableArea: 110.5,
+                    totalArea: 145.8,
+                    description: "Exclusive top floor residence",
+                    balconyArea: 35.3,
+                    price: 2200,
+                    photos: []
+                }
+            };
+            this.panoramas = {
+                a25: [
+                    {
+                        url: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2665&q=80",
+                        title: "Living Room 360°"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2670&q=80",
+                        title: "Kitchen 360°"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+                        title: "Bedroom 360°"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+                        title: "Bathroom 360°"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1580237072617-771c3ecc4a24?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+                        title: "Balcony 360°"
+                    }
+                ],
+                b110: [
+                    {
+                        url: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2665&q=80",
+                        title: "Living Room 360°"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2670&q=80",
+                        title: "Kitchen 360°"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+                        title: "Bedroom 360°"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+                        title: "Bathroom 360°"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1580237072617-771c3ecc4a24?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+                        title: "Balcony 360°"
+                    }
+                ]
+            };
+            this.currentApartment = null;
+            this.currentPanoramaIndex = 0;
+            this.currentRoom = 'living'; // Add this line to track current room
+            this.scene = null;
+            this.camera = null;
+            this.renderer = null;
+            this.controls = null;
+            this.textureLoader = new THREE.TextureLoader();
+        }
+    
+        async init() {
+            try {
+                const loadingManager = new LoadingManager();
+                await loadingManager.simulateLoading();
+    
+                this.initializeElements();
+                this.initializeApartmentSelector();
+                this.bindEvents();
+    
+                this.setupThreeJS();
+                this.loadCurrentPanorama();
+            } catch (error) {
+                console.error('Initialization error:', error);
+            }
+        }
+    
+        setupThreeJS() {
+            this.scene = new THREE.Scene();
+            this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            this.camera.position.z = 0.1;
+            this.renderer = new THREE.WebGLRenderer();
+            this.renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(this.renderer.domElement);
+            this.renderer.domElement.style.position = 'fixed';
+            this.renderer.domElement.style.top = '0';
+            this.renderer.domElement.style.left = '0';
+            this.renderer.domElement.style.zIndex = '-1';
+            this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+            this.controls.enableZoom = false;
+            this.controls.enablePan = false;
+            this.controls.rotateSpeed = -0.5;
+            this.animate();
+        }
+    
+        loadCurrentPanorama() {
+            if (!this.scene || !this.currentApartment) return;
+    
+            while (this.scene.children.length > 0) { 
+                this.scene.remove(this.scene.children[0]); 
+            }
+    
+            const panoramas = this.panoramas[this.currentApartment];
+            if (!panoramas || panoramas.length === 0) return;
+    
+            const currentPanorama = panoramas[this.currentPanoramaIndex];
+            if (!currentPanorama) return;
+    
+            const geometry = new THREE.SphereGeometry(500, 60, 40);
+            geometry.scale(-1, 1, 1);
+    
+            this.textureLoader.load(
+                currentPanorama.url,
+                (texture) => {
+                    const material = new THREE.MeshBasicMaterial({ map: texture });
+                    const sphere = new THREE.Mesh(geometry, material);
+                    this.scene.add(sphere);
+                },
+                undefined,
+                (err) => {
+                    console.error('Error loading panorama:', err);
+                }
+            );
+        }
+    
+        animate() {
+            requestAnimationFrame(() => this.animate());
+            
+            if (this.controls) {
+                this.controls.update();
+            }
+            
+            if (this.renderer && this.scene && this.camera) {
+                this.renderer.render(this.scene, this.camera);
+            }
+        }
+    
+        initializeElements() {
+            this.apartmentSelector = document.getElementById('apartment-selector');
+        }
+    
+        initializeApartmentSelector() {
+            if (!this.apartmentSelector) return;
+            
+            // Clear existing options
+            this.apartmentSelector.innerHTML = '';
+            
+            // Add options for each apartment
+            Object.entries(this.apartments).forEach(([id, apartment]) => {
+                const option = document.createElement('option');
+                option.value = id;
+                option.textContent = `${apartment.code}`;
+                this.apartmentSelector.appendChild(option);
+            });
+    
+            // Set initial apartment
+            this.currentApartment = this.apartmentSelector.value;
+            this.updateApartmentDisplay();
+        }
+    
+        updateApartmentDisplay() {
+            const apartment = this.apartments[this.currentApartment];
+            if (!apartment) {
+                console.warn('Invalid apartment data for:', this.currentApartment);
+                return;
+            }
+    
+            // Update UI elements
+            // (Omitted for brevity)
+            
+            this.loadCurrentPanorama();
+        }
+    
+        bindEvents() {
+            if (this.apartmentSelector) {
+                this.apartmentSelector.addEventListener('change', (e) => {
+                    const newApartmentId = e.target.value;
+                    this.currentApartment = newApartmentId;
+                    
+                    // Reset to living room view when changing apartments
+                    this.currentPanoramaIndex = 0;
+                    this.currentRoom = 'living';
+                    
+                    // Update UI
+                    const roomButtons = document.querySelectorAll('.nav-action-btn');
+                    roomButtons.forEach(btn => btn.classList.remove('active'));
+                    document.querySelector('[data-room="living"]').classList.add('active');
+                    
+                    // Update display
+                    this.updateApartmentDisplay();
+                    
+                    // Load new panorama
+                    this.loadCurrentPanorama();
+                });
+            }
+            
+            // Add room navigation button handlers
+            const roomButtons = document.querySelectorAll('.nav-action-btn');
+            roomButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const room = button.dataset.room;
+                    this.switchRoom(room);
+                    
+                    // Update active button state
+                    roomButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                });
+            });
+    
+            document.getElementById('info-toggle').addEventListener('click', () => {
+                this.toggleInfoPanel();
+            });
+    
+            document.getElementById('info-close').addEventListener('click', () => {
+                document.getElementById('info-panel').classList.remove('active');
+            });
+        }
+    
+        switchRoom(room) {
+            this.currentRoom = room;
+            
+            // Get the panoramas for current apartment
+            const panoramas = this.panoramas[this.currentApartment];
+            if (!panoramas) return;
+    
+            // Find the panorama index for the selected room
+            let newIndex = 0;
+            switch(room) {
+                case 'living':
+                    newIndex = 0;
+                    break;
+                case 'kitchen':
+                    newIndex = 1;
+                    break;
+                case 'bedroom':
+                    newIndex = 2;
+                    break;
+                case 'bathroom':
+                    newIndex = 3;
+                    break;
+                case 'balcony':
+                    newIndex = 4;
+                    break;
+            }
+    
+            // Only switch if we have a panorama for this index
+            if (panoramas[newIndex]) {
+                this.currentPanoramaIndex = newIndex;
+                this.loadCurrentPanorama();
+            }
+        }
+    
+        toggleInfoPanel() {
+            const panel = document.getElementById('info-panel');
+            panel.classList.toggle('active');
+            this.updateInfoPanel();
+        }
+    
+        updateInfoPanel() {
+            const apartment = this.apartments[this.currentApartment];
+            if (!apartment) return;
+    
+            document.getElementById('apartment-code').textContent = `Code: ${apartment.code}`;
+            document.getElementById('apartment-rooms').textContent = `Rooms: ${apartment.rooms}`;
+            document.getElementById('apartment-area').textContent = `Total Area: ${apartment.totalArea}m² (Usable: ${apartment.usableArea}m²)`;
+            document.getElementById('apartment-features').textContent = `Balcony Area: ${apartment.balconyArea}m²`;
+            document.getElementById('apartment-location').textContent = `Building ${apartment.building}, Floor ${apartment.floor}`;
+            document.getElementById('apartment-price').textContent = `€${apartment.price}/month`;
+        }
+    }
+    
+    // Initialize the application
+    window.addEventListener('load', () => {
+        window.apartmentViewer = new ApartmentViewer();
+        apartmentViewer.init();
+    });
+    </script>
+    
+    </body></html>
