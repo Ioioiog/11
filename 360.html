@@ -1,4 +1,4 @@
-<html><head><base href="/">
+<html><head><base href="/360">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Apartment Delux Virtual Experience</title>
@@ -136,6 +136,11 @@
         width: 100%;
         height: 100%;
         z-index: -1;
+        cursor: zoom-in;
+    }
+
+    .zooming-out #360-viewer {
+        cursor: zoom-out;
     }
 
     .info-panel {
@@ -207,6 +212,36 @@
         background: var(--accent-color);
     }
 
+    .zoom-controls {
+        position: fixed;
+        bottom: 10rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(12px);
+        padding: 0.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        z-index: 100;
+        display: flex;
+        gap: 1rem;
+    }
+
+    .zoom-btn {
+        padding: 0.5rem;
+        border: none;
+        border-radius: 6px;
+        background: var(--primary-color);
+        color: white;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .zoom-btn:hover {
+        background: var(--secondary-color);
+    }
+
+    /* Mobile-friendly navbar adjustments */
     @media screen and (max-width: 768px) {
         .main-navbar {
             padding: 0.5rem;
@@ -216,38 +251,31 @@
 
         .navbar-controls {
             width: 100%;
-            overflow-x: auto;
-            padding-bottom: 0.5rem;
         }
 
         .nav-group {
-            flex-wrap: nowrap;
-            width: max-content;
-            padding: 0 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
         }
 
         .apartment-select {
-            min-width: 150px;
-            font-size: 0.8rem;
-            padding: 0.4rem 0.8rem;
+            width: 100%;
+            min-width: unset;
         }
 
         .nav-action-btn {
+            font-size: 0.75rem;
             padding: 0.4rem 0.8rem;
-            font-size: 0.8rem;
-            white-space: nowrap;
         }
+    }
 
-        .brand-text {
-            font-size: 1rem;
-        }
-
+    /* Mobile-friendly info panel */
+    @media screen and (max-width: 768px) {
         .info-panel {
-            bottom: 0;
-            width: 100%;
-            border-radius: 12px 12px 0 0;
-            max-height: 80vh;
-            overflow-y: auto;
+            width: 95%;
+            bottom: 1rem;
+            padding: 1rem;
         }
 
         .info-content {
@@ -266,30 +294,29 @@
         .info-section p {
             font-size: 0.85rem;
         }
+    }
 
-        .info-close {
-            padding: 0.75rem;
-            top: 0.5rem;
-            right: 0.5rem;
+    /* Mobile-friendly zoom controls */
+    @media screen and (max-width: 768px) {
+        .zoom-controls {
+            bottom: 1rem;
+            right: 1rem;
         }
 
-        select.apartment-select {
-            height: 40px; /* Larger touch target */
-        }
-
-        .nav-action-btn {
-            height: 40px; /* Consistent height for touch */
+        .zoom-btn {
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
         }
     }
 
-    @media (hover: none) {
-        .nav-action-btn:hover {
-            transform: none;
+    @media (hover: none) and (pointer: coarse) {
+        #360-viewer {
+            cursor: grab;
         }
-        
-        .nav-action-btn:active {
-            background: var(--secondary-color);
-            transform: scale(0.98);
+
+        .zooming-out #360-viewer {
+            cursor: grabbing;
         }
     }
 </style>
@@ -358,6 +385,11 @@
 </nav>
 
 <div id="360-viewer"></div>
+
+<div class="zoom-controls" style="position: fixed; bottom: 2rem; right: 2rem; transform: none; left: auto;">
+    <button class="zoom-btn" id="zoom-in">+</button>
+    <button class="zoom-btn" id="zoom-out">-</button>
+</div>
 
 <div class="info-panel" id="info-panel">
     <button class="info-close" id="info-close">
@@ -438,7 +470,7 @@ class ApartmentViewer {
                 totalArea: 108.5,
                 description: "Premium waterfront apartment with stunning views",
                 balconyArea: 37.1,
-                price: 1400,
+                price: 1500,
                 photos: [
                     { url: "https://example.com/a25/living.jpg", caption: "Living Room" }
                 ]
@@ -526,30 +558,30 @@ class ApartmentViewer {
                 totalArea: 145.8,
                 description: "Exclusive top floor residence",
                 balconyArea: 35.3,
-                price: 1800,
+                price: 2300,
                 photos: []
             }
         };
         this.panoramas = {
             a25: [
                 {
-                    url: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2665&q=80",
+                    url: "https://apartamentdelux.ro/assets/1-CjqmLx0c.jpg",
                     title: "Living Room 360°"
                 },
                 {
-                    url: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2670&q=80",
+                    url: "https://apartamentdelux.ro/assets/3-DcEvIpM0.jpg",
                     title: "Kitchen 360°"
                 },
                 {
-                    url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+                    url: "https://apartamentdelux.ro/assets/3-DcEvIpM0.jpg",
                     title: "Bedroom 360°"
                 },
                 {
-                    url: "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+                    url: "https://apartamentdelux.ro/assets/3-DcEvIpM0.jpg",
                     title: "Bathroom 360°"
                 },
                 {
-                    url: "https://images.unsplash.com/photo-1580237072617-771c3ecc4a24?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+                    url: "https://apartamentdelux.ro/assets/3-DcEvIpM0.jpg",
                     title: "Balcony 360°"
                 }
             ],
@@ -584,6 +616,7 @@ class ApartmentViewer {
         this.renderer = null;
         this.controls = null;
         this.textureLoader = new THREE.TextureLoader();
+        this.zoomTimer = null; // Initialize zoom timer
     }
 
     async init() {
@@ -597,19 +630,8 @@ class ApartmentViewer {
 
             this.setupThreeJS();
             this.loadCurrentPanorama();
-            
-            // Add resize handler
-            window.addEventListener('resize', () => this.handleResize());
         } catch (error) {
             console.error('Initialization error:', error);
-        }
-    }
-
-    handleResize() {
-        if (this.camera && this.renderer) {
-            this.camera.aspect = window.innerWidth / window.innerHeight;
-            this.camera.updateProjectionMatrix();
-            this.renderer.setSize(window.innerWidth, window.innerHeight);
         }
     }
 
@@ -625,20 +647,48 @@ class ApartmentViewer {
         this.renderer.domElement.style.left = '0';
         this.renderer.domElement.style.zIndex = '-1';
         
+        // Update OrbitControls initialization
         this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-        this.controls.enableZoom = false;
-        this.controls.enablePan = false;
-        this.controls.rotateSpeed = -0.5;
-
-        // Add touch controls configuration
         this.controls.enableDamping = true;
         this.controls.dampingFactor = 0.05;
-        this.controls.touchRotateSpeed = 0.5;
-        this.controls.autoRotate = false;
+        this.controls.rotateSpeed = 0.5;
+        this.controls.touchRotate = true;
+        this.controls.touchZoom = true;
+        this.controls.touches = {
+            ONE: THREE.TOUCH.ROTATE,
+            TWO: THREE.TOUCH.DOLLY_PAN
+        };
+        this.controls.enableZoom = true;
+        this.controls.minDistance = 1;
+        this.controls.maxDistance = 50;
+        this.controls.zoomSpeed = 1.0;
+        this.controls.enablePan = false;
 
-        // Adjust for mobile performance
-        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        // Add mouse wheel zoom handling
+        this.renderer.domElement.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            
+            if (e.deltaY < 0) {
+                // Scrolling up - zoom in
+                this.zoomIn();
+                document.body.classList.remove('zooming-out');
+            } else {
+                // Scrolling down - zoom out
+                this.zoomOut();
+                document.body.classList.add('zooming-out');
+            }
+            
+            // Remove zooming-out class after a short delay
+            clearTimeout(this.zoomTimer);
+            this.zoomTimer = setTimeout(() => {
+                document.body.classList.remove('zooming-out');
+            }, 150);
+        }, { passive: false });
 
+        // Add zoom methods to controls
+        this.controls.zoomIn = () => this.zoomIn();
+        this.controls.zoomOut = () => this.zoomOut();
+        
         this.animate();
     }
 
@@ -686,6 +736,8 @@ class ApartmentViewer {
 
     initializeElements() {
         this.apartmentSelector = document.getElementById('apartment-selector');
+        this.zoomInButton = document.getElementById('zoom-in');
+        this.zoomOutButton = document.getElementById('zoom-out');
     }
 
     initializeApartmentSelector() {
@@ -763,6 +815,35 @@ class ApartmentViewer {
         document.getElementById('info-close').addEventListener('click', () => {
             document.getElementById('info-panel').classList.remove('active');
         });
+
+        // Update these zoom button handlers
+        this.zoomInButton.addEventListener('click', () => {
+            if (this.controls) {
+                this.controls.zoomIn(1.2); // Changed from dollyIn to zoomIn
+            }
+        });
+
+        this.zoomOutButton.addEventListener('click', () => {
+            if (this.controls) {
+                this.controls.zoomOut(1.2); // Changed from dollyOut to zoomOut
+            }
+        });
+
+        // Add resize event listener
+        window.addEventListener('resize', () => this.handleResize());
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => this.handleResize(), 100);
+        });
+    }
+
+    handleResize() {
+        if (this.camera) {
+            this.camera.aspect = window.innerWidth / window.innerHeight;
+            this.camera.updateProjectionMatrix();
+        }
+        if (this.renderer) {
+            this.renderer.setSize(window.innerWidth, window.innerHeight);
+        }
     }
 
     switchRoom(room) {
@@ -815,6 +896,20 @@ class ApartmentViewer {
         document.getElementById('apartment-features').textContent = `Balcony Area: ${apartment.balconyArea}m²`;
         document.getElementById('apartment-location').textContent = `Building ${apartment.building}, Floor ${apartment.floor}`;
         document.getElementById('apartment-price').textContent = `€${apartment.price}/month`;
+    }
+
+    zoomIn() {
+        if (this.camera) {
+            this.camera.fov = Math.max(this.camera.fov * 0.95, 30); // Limit minimum FOV
+            this.camera.updateProjectionMatrix();
+        }
+    }
+
+    zoomOut() {
+        if (this.camera) {
+            this.camera.fov = Math.min(this.camera.fov * 1.05, 120); // Limit maximum FOV
+            this.camera.updateProjectionMatrix();
+        }
     }
 }
 
