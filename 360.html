@@ -931,7 +931,7 @@ class ApartmentViewer {
         this.controls.addEventListener('change', () => {
             this.updateZoomButtonStates();
         });
-    }
+        }
 
     handleZoom(direction) {
         if (!this.controls) return;
@@ -957,7 +957,7 @@ class ApartmentViewer {
         zoomInBtn.disabled = currentZoom <= this.minZoom;
         zoomOutBtn.disabled = currentZoom >= this.maxZoom;
     }
-        }
+
         
         // Add room navigation button handlers
         const roomButtons = document.querySelectorAll('.nav-action-btn');
