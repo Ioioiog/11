@@ -49,6 +49,13 @@ Corp: ${property.details.building}
                   <MapPin size={18} className="mr-1 text-red-500" />
                   <span>{property.location.address}</span>
                 </div>
+
+                <button
+                  onClick={() => window.open('https://apartamentdelux.ro/360')}
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  Vezi tur virtual
+                </button>
               </div>
               <button
                 onClick={onClose}
