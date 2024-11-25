@@ -627,58 +627,22 @@ this.panoramas = {
         }
     }
 
-    setupThreeJS() {
-    this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    this.camera.position.z = 0.1;
-    this.renderer = new THREE.WebGLRenderer();
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(this.renderer.domElement);
-    this.renderer.domElement.style.position = 'fixed';
-    this.renderer.domElement.style.top = '0';
-    this.renderer.domElement.style.left = '0';
-    this.renderer.domElement.style.zIndex = '-1';
-    this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-    this.controls.enableZoom = true; // Enable zooming
-    this.controls.enablePan = false;
-    this.controls.rotateSpeed = -0.5;
-    this.controls.minPolarAngle = 0; // Set the minimum vertical angle
-    this.controls.maxPolarAngle = Math.PI; // Set the maximum vertical angle
-    this.animate();
-}
+      // Optimized event listeners
+    const roomButtons = document.querySelectorAll('[data-room]');
+    roomButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            const room = e.target.closest('button').dataset.room;
+            viewer.switchRoom(room);
+            
+            roomButtons.forEach(btn => btn.classList.remove('active'));
+            e.target.closest('button').classList.add('active');
+        });
+    });
 
-    loadCurrentPanorama() {
-        if (!this.scene || !this.currentApartment) return;
-
-        while (this.scene.children.length > 0) { 
-            this.scene.remove(this.scene.children[0]); 
-        }
-
-        const panoramas = this.panoramas[this.currentApartment];
-        if (!panoramas || panoramas.length === 0) return;
-
-        const currentPanorama = panoramas[this.currentPanoramaIndex];
-        if (!currentPanorama) return;
-
-        const geometry = new THREE.SphereGeometry(500, 60, 40);
-        geometry.scale(-1, 1, 1);
-
-        this.textureLoader.load(
-            currentPanorama.url,
-            (texture) => {
-                const material = new THREE.MeshBasicMaterial({ map: texture });
-                const sphere = new THREE.Mesh(geometry, material);
-                this.scene.add(sphere);
-            },
-            undefined,
-            (err) => {
-                console.error('Error loading panorama:', err);
-            }
-        );
-    }
-
-    animate() {
-        requestAnimationFrame(() => this.animate());
+    const apartmentSelector = document.getElementById('apartment-selector');
+    apartmentSelector.addEventListener('change', (e) => {
+        viewer.switchApartment(e.target.value);
+    });
         
         if (this.controls) {
             this.controls.update();
