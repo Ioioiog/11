@@ -322,15 +322,15 @@
     
     <div class="navbar-controls">
         <div class="nav-group">
-            <select class="apartment-select" id="apartment-selector">
-                <option value="a25">Yacht A.2.5</option>
-                <option value="b110">Yacht B.1.10</option>
-                <option value="b27">Yacht B.2.7</option>
-                <option value="b29">Yacht B.2.9</option>
-                <option value="p26">Prima 26</option>
-                <option value="p21">Prima 21</option>
-                <option value="p51">Prima 51</option>
-            </select>
+            <select class="apartment-select" id="apartment-selector" style="min-width: 140px; padding: 0.3rem 0.6rem; background-color: rgba(64, 64, 64, 0.8); color: white;">
+    <option value="a25">Yacht A.2.5</option>
+    <option value="b110">Yacht B.1.10</option>
+    <option value="b27">Yacht B.2.7</option>
+    <option value="b29">Yacht B.2.9</option>
+    <option value="p26">Prima 26</option>
+    <option value="p21">Prima 21</option>
+    <option value="p51">Prima 51</option>
+</select>
             
             <button class="nav-action-btn" data-room="living">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -767,11 +767,18 @@ class ApartmentViewer {
         this.controls.minDistance = 0.1; // Min zoom level
         this.controls.maxDistance = 2;   // Max zoom level
         this.controls.enablePan = true;
+        
+        // Update touch controls configuration
         this.controls.touches = {
             ONE: THREE.TOUCH.ROTATE,
-            TWO: THREE.TOUCH.DOLLY_PAN
+            TWO: THREE.TOUCH.DOLLY_PAN // This enables pinch-to-zoom
         };
-        this.controls.rotateSpeed = -0.5;
+        
+        // Add touch event listeners
+        this.renderer.domElement.addEventListener('touchstart', this.handleTouchStart.bind(this), false);
+        this.renderer.domElement.addEventListener('touchmove', this.handleTouchMove.bind(this), false);
+        this.renderer.domElement.addEventListener('touchend', this.handleTouchEnd.bind(this), false);
+        
         this.animate();
 
         // Add event listeners for zoom controls
@@ -791,6 +798,53 @@ class ApartmentViewer {
         
         // Initial resize
         this.handleResize();
+    }
+
+    handleTouchStart(event) {
+        if (event.touches.length === 2) {
+            event.preventDefault();
+            
+            // Store initial touch positions
+            this.touchStartPositions = {
+                touch1: { x: event.touches[0].clientX, y: event.touches[0].clientY },
+                touch2: { x: event.touches[1].clientX, y: event.touches[1].clientY }
+            };
+            
+            // Calculate initial pinch distance
+            this.initialPinchDistance = Math.hypot(
+                this.touchStartPositions.touch1.x - this.touchStartPositions.touch2.x,
+                this.touchStartPositions.touch1.y - this.touchStartPositions.touch2.y
+            );
+        }
+    }
+
+    handleTouchMove(event) {
+        if (event.touches.length === 2) {
+            event.preventDefault();
+            
+            // Calculate current pinch distance
+            const currentPinchDistance = Math.hypot(
+                event.touches[0].clientX - event.touches[1].clientX,
+                event.touches[0].clientY - event.touches[1].clientY
+            );
+            
+            // Calculate zoom factor based on pinch gesture
+            if (this.initialPinchDistance) {
+                const pinchDelta = currentPinchDistance - this.initialPinchDistance;
+                const zoomFactor = pinchDelta * 0.05; // Adjust sensitivity here
+                
+                // Apply zoom
+                if (Math.abs(zoomFactor) > 0.1) { // Threshold to prevent tiny adjustments
+                    this.handleZoom(zoomFactor > 0 ? 'in' : 'out', Math.abs(zoomFactor));
+                    this.initialPinchDistance = currentPinchDistance; // Update reference distance
+                }
+            }
+        }
+    }
+
+    handleTouchEnd(event) {
+        this.initialPinchDistance = null;
+        this.touchStartPositions = null;
     }
 
     handleResize() {
@@ -877,11 +931,12 @@ class ApartmentViewer {
     }
 
     handleZoom(direction, factor = 1) {
-        const zoomSpeed = 5 * factor;
-        if (direction === 'in' && this.currentZoom < this.maxZoom) {
-            this.currentZoom = Math.min(this.maxZoom, this.currentZoom + zoomSpeed);
-        } else if (direction === 'out' && this.currentZoom > this.minZoom) {
+        const zoomSpeed = 2 * factor; // Reduced from 5 to 2 for smoother touch control
+        
+        if (direction === 'in' && this.currentZoom > this.minZoom) {
             this.currentZoom = Math.max(this.minZoom, this.currentZoom - zoomSpeed);
+        } else if (direction === 'out' && this.currentZoom < this.maxZoom) {
+            this.currentZoom = Math.min(this.maxZoom, this.currentZoom + zoomSpeed);
         }
         
         // Update camera
