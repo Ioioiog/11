@@ -279,6 +279,47 @@
             font-size: 1.1rem;
         }
     }
+        .zoom-controls {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-left: 1rem;
+    }
+
+    .zoom-btn {
+        padding: 0.5rem;
+        border: none;
+        border-radius: 8px;
+        background: var(--accent-color);
+        color: white;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+    }
+
+    .zoom-btn:hover {
+        background: var(--secondary-color);
+        transform: translateY(-2px);
+    }
+
+    .zoom-btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    @media (max-width: 768px) {
+        .zoom-controls {
+            margin-left: 0;
+            width: 100%;
+            justify-content: center;
+        }
+    }
 </style>
 </head><body>
 <nav class="main-navbar" style="background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(8px);">
@@ -705,10 +746,14 @@ class ApartmentViewer {
         } catch (error) {
             console.error('Initialization error:', error);
         }
+        
+        this.minZoom = 0.5;  // Maximum zoom out (wider view)
+        this.maxZoom = 2.0;  // Maximum zoom in (closer view)
+        this.zoomStep = 0.1; // Amount to zoom per button click
     }
 
     setupThreeJS() {
-        this.scene = new THREE.Scene();
+         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         this.camera.position.z = 0.1;
         this.renderer = new THREE.WebGLRenderer();
@@ -717,14 +762,16 @@ class ApartmentViewer {
         this.renderer.domElement.style.position = 'fixed';
         this.renderer.domElement.style.top = '0';
         this.renderer.domElement.style.left = '0';
-        this.renderer.domElement.style.zIndex = '1'; // Change from -1 to 1
+        this.renderer.domElement.style.zIndex = '1';
         
         this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-        this.controls.enableZoom = false;
+        this.controls.enableZoom = true;  // Enable zoom
         this.controls.enablePan = false;
         this.controls.rotateSpeed = -0.5;
+        this.controls.minDistance = this.minZoom;  // Set zoom limits
+        this.controls.maxDistance = this.maxZoom;
         this.animate();
-
+        
         // Add resize handler
         window.addEventListener('resize', this.handleResize.bind(this));
         
@@ -873,6 +920,43 @@ class ApartmentViewer {
                 // Load new panorama
                 this.loadCurrentPanorama();
             });
+             // Add zoom button handlers
+        const zoomInBtn = document.getElementById('zoom-in');
+        const zoomOutBtn = document.getElementById('zoom-out');
+
+        zoomInBtn.addEventListener('click', () => this.handleZoom('in'));
+        zoomOutBtn.addEventListener('click', () => this.handleZoom('out'));
+
+        // Update zoom button states on zoom change
+        this.controls.addEventListener('change', () => {
+            this.updateZoomButtonStates();
+        });
+    }
+
+    handleZoom(direction) {
+        if (!this.controls) return;
+
+        const currentZoom = this.controls.getDistance();
+        let newZoom = currentZoom;
+
+        if (direction === 'in' && currentZoom > this.minZoom) {
+            newZoom = Math.max(currentZoom - this.zoomStep, this.minZoom);
+        } else if (direction === 'out' && currentZoom < this.maxZoom) {
+            newZoom = Math.min(currentZoom + this.zoomStep, this.maxZoom);
+        }
+
+        this.controls.dollyTo(newZoom, true);
+        this.updateZoomButtonStates();
+    }
+
+    updateZoomButtonStates() {
+        const currentZoom = this.controls.getDistance();
+        const zoomInBtn = document.getElementById('zoom-in');
+        const zoomOutBtn = document.getElementById('zoom-out');
+
+        zoomInBtn.disabled = currentZoom <= this.minZoom;
+        zoomOutBtn.disabled = currentZoom >= this.maxZoom;
+    }
         }
         
         // Add room navigation button handlers
