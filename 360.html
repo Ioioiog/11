@@ -1,563 +1,271 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <base href="/">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Apartment Delux Virtual Experience</title>
-
-    <!-- Required external libraries -->
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ApartamentDeLux.ro - Tur Virtual 360° | Apartamente de Lux în București</title>
+    <meta name="description" content="Explorează apartamentele noastre de lux în București prin tururi virtuale 360°. Vizualizare imersivă a proprietăților exclusiviste." />
+    <meta name="author" content="Lovable" />
+    <meta property="og:image" content="/og-image.png" />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script>
-        // Create a global variable for OrbitControls
-        let OrbitControls;
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/controls/OrbitControls.js" onload="
-        OrbitControls = THREE.OrbitControls;
-    "></script>
-
     <style>
-        :root {
-            --primary-color: #FF9966;
-            --secondary-color: #FF7733;
-            --accent-color: #4A4A4A;
-            --text-color: #333333;
-            --background-color: #F5F5F5;
-            --shadow-color: rgba(74, 74, 74, 0.2);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-        }
-
-        body {
-            background: var(--background-color);
-            color: var(--text-color);
-            overflow-x: hidden;
-            height: 100vh;
-        }
-
+      body {
+        margin: 0;
+        font-family: 'Inter', sans-serif;
+      }
+      .viewer-container {
+        position: fixed;
+        inset: 0;
+        background: black;
+      }
+      .controls-panel {
+        position: fixed;
+        bottom: 32px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 9999px;
+        padding: 12px 24px;
+        display: flex;
+        gap: 16px;
+      }
+      .info-panel {
+        position: fixed;
+        top: 32px;
+        right: 32px;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 16px;
+        padding: 24px;
+        width: 384px;
+        max-width: 90vw;
+      }
+      .main-navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(8px);
+        padding: 16px 32px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 50;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      }
+      .navbar-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .brand-logo {
+        height: 48px;
+        width: auto;
+      }
+      .brand-text {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1f2937;
+        text-decoration: none;
+      }
+      .brand-slogan {
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        color: #FFB088;
+        line-height: 1.25;
+      }
+      .nav-action-btn {
+        padding: 8px 16px;
+        border-radius: 8px;
+        background: #FF9966;
+        color: white;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 300ms;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .nav-action-btn:hover {
+        background: #FF7733;
+        transform: translateY(-2px);
+      }
+      @media (max-width: 768px) {
         .main-navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(8px);
-            padding: 1rem 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+          padding: 16px;
+          flex-direction: column;
+          gap: 16px;
         }
-
-        .navbar-brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .brand-logo {
-            height: 48px;
-            width: auto;
-        }
-
-        .brand-text {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--accent-color);
-            text-decoration: none;
-        }
-
-        .brand-slogan {
-            font-size: 0.7rem;
-            letter-spacing: 1px;
-            color: #FFB088;
-            line-height: 1.2;
-        }
-
         .navbar-controls {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
+          width: 100%;
         }
-
         .nav-group {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            flex-wrap: wrap;
+          width: 100%;
+          justify-content: center;
         }
-
-        .apartment-select {
-            min-width: 200px;
-            padding: 0.5rem 1rem;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            background: rgba(64, 64, 64, 0.8);
-            color: white;
-            font-size: 0.875rem;
-        }
-
-        .nav-action-btn {
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 8px;
-            background: var(--primary-color);
-            color: white;
-            font-size: 0.875rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .nav-action-btn:hover {
-            background: var(--secondary-color);
-            transform: translateY(-2px);
-        }
-
-        .nav-action-btn.active {
-            background: var(--secondary-color);
-        }
-
-        #360-viewer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
-
-        .zoom-controls {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.85);
-            padding: 8px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        }
-
-        .zoom-btn {
-            width: 40px;
-            height: 40px;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--primary-color);
-            border: none;
-            border-radius: 4px;
-            color: white;
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: background-color 0.3s ease;
-        }
-
-        .zoom-btn:hover {
-            background: var(--secondary-color);
-        }
-
-        .info-panel {
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(8px);
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            z-index: 100;
-            width: 90%;
-            max-width: 800px;
-            display: none;
-            animation: slideUp 0.3s ease-out;
-        }
-
-        .info-panel.active {
-            display: block;
-        }
-
-        .info-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .info-section {
-            padding: 0.5rem;
-        }
-
-        .info-section h3 {
-            color: var(--accent-color);
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
-        }
-
-        .info-section p {
-            color: var(--text-color);
-            font-size: 0.9rem;
-            line-height: 1.5;
-            margin-bottom: 0.5rem;
-        }
-
-        @keyframes slideUp {
-            from {
-                transform: translate(-50%, 100%);
-                opacity: 0;
-            }
-            to {
-                transform: translate(-50%, 0);
-                opacity: 1;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .main-navbar {
-                padding: 1rem;
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .navbar-controls {
-                width: 100%;
-            }
-
-            .nav-group {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .apartment-select {
-                width: 100%;
-                min-width: unset;
-            }
-
-            .info-panel {
-                width: 95%;
-                bottom: 1rem;
-                padding: 1rem;
-            }
-
-            .info-content {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <nav class="main-navbar">
-        <div class="navbar-brand">
-            <img src="https://apartamentdelux.ro/assets/logo-DmiD_IiC.png" alt="Apartment Delux logo" class="brand-logo">
-            <div>
-                <a href="https://apartamentdelux.ro" target="_blank" class="brand-text">
-                    apartamentdelux.ro
-                </a>
-                <div class="brand-slogan">
-                    BEYOND WALLS<br>
-                    EMBRACE YOUR HOME
-                </div>
-            </div>
+      <div class="navbar-brand">
+        <img 
+          src="https://apartamentdelux.ro/assets/logo-DmiD_IiC.png" 
+          alt="Apartment Delux logo" 
+          class="brand-logo"
+        />
+        <div>
+          <a 
+            href="https://apartamentdelux.ro" 
+            target="_blank" 
+            class="brand-text"
+            rel="noopener noreferrer"
+          >
+            apartamentdelux.ro
+          </a>
+          <div class="brand-slogan">
+            BEYOND WALLS<br />
+            EMBRACE YOUR HOME
+          </div>
         </div>
-        
-        <div class="navbar-controls">
-            <div class="nav-group">
-                <select class="apartment-select" id="apartment-selector">
-                    <option value="a25">Yacht A.2.5</option>
-                    <option value="b110">Yacht B.1.10</option>
-                    <option value="b27">Yacht B.2.7</option>
-                    <option value="b29">Yacht B.2.9</option>
-                    <option value="p26">Prima 26</option>
-                    <option value="p21">Prima 21</option>
-                    <option value="p51">Prima 51</option>
-                </select>
-                
-                <button class="nav-action-btn active" data-room="living">Living</button>
-                <button class="nav-action-btn" data-room="kitchen">Kitchen</button>
-                <button class="nav-action-btn" data-room="bedroom">Bedroom</button>
-                <button class="nav-action-btn" data-room="bathroom">Bathroom</button>
-                <button class="nav-action-btn" data-room="balcony">Balcony</button>
-                <button class="nav-action-btn" id="info-toggle">Info</button>
-            </div>
-        </div>
+      </div>
     </nav>
 
-    <div id="360-viewer"></div>
-    
-    <div class="zoom-controls">
-        <button class="zoom-btn" id="zoom-in">+</button>
-        <button class="zoom-btn" id="zoom-reset">↺</button>
-        <button class="zoom-btn" id="zoom-out">−</button>
+    <div id="viewer" class="viewer-container"></div>
+
+    <div class="controls-panel">
+      <button class="nav-action-btn" onclick="rotateLeft()">Rotate Left</button>
+      <button class="nav-action-btn" onclick="rotateRight()">Rotate Right</button>
+      <button class="nav-action-btn" onclick="zoomIn()">Zoom In</button>
+      <button class="nav-action-btn" onclick="zoomOut()">Zoom Out</button>
     </div>
 
-    <div class="info-panel" id="info-panel">
-        <div class="info-content">
-            <div class="info-section">
-                <h3>Apartment Details</h3>
-                <p id="apartment-code"></p>
-                <p id="apartment-rooms"></p>
-                <p id="apartment-area"></p>
-            </div>
-            <div class="info-section">
-                <h3>Features</h3>
-                <p id="apartment-features"></p>
-            </div>
-            <div class="info-section">
-                <h3>Location</h3>
-                <p id="apartment-location"></p>
-            </div>
-            <div class="info-section">
-                <h3>Price</h3>
-                <p id="apartment-price"></p>
-            </div>
-        </div>
+    <div class="info-panel">
+      <h2 style="margin-top: 0; font-size: 1.25rem; font-weight: 600;">Yacht A.2.5</h2>
+      <p style="margin: 8px 0; color: #4B5563;">
+        Apartament de lux cu 3 camere în complexul rezidențial Yacht. Vedere panoramică spre lac, finisaje premium și dotări de ultimă generație.
+      </p>
     </div>
 
     <script>
-        class ApartmentViewer {
-            constructor() {
-                // Apartment data
-                this.apartments = {
-                    a25: {
-                        id: "a25",
-                        code: "Yacht A.2.5",
-                        building: "Yacht A",
-                        floor: 2,
-                        unit: 5,
-                        rooms: 3,
-                        usableArea: 71.4,
-                        totalArea: 108.5,
-                        balconyArea: 37.1,
-                        price: 1500,
-                        panoramas: {
-                            living: "assets/panoramas/a25/living.jpg",
-                            kitchen: "assets/panoramas/a25/kitchen.jpg",
-                            bedroom: "assets/panoramas/a25/bedroom.jpg",
-                            bathroom: "assets/panoramas/a25/bathroom.jpg",
-                            balcony: "assets/panoramas/a25/balcony.jpg"
-                        }
-                    },
-                    b110: {
-                        id: "b110",
-                        code: "Yacht B.1.10",
-                        building: "Yacht B",
-                        floor: 1,
-                        unit: 10,
-                        rooms: 2,
-                        usableArea: 52.4,
-                        totalArea: 65,
-                        balconyArea: 12.6,
-                        price: 1200,
-                        panoramas: {
-                            living: "assets/panoramas/b110/living.jpg",
-                            kitchen: "assets/panoramas/b110/kitchen.jpg",
-                            bedroom: "assets/panoramas/b110/bedroom.jpg",
-                            bathroom: "assets/panoramas/b110/bathroom.jpg",
-                            balcony: "assets/panoramas/b110/balcony.jpg"
-                        }
-                    },
-                    b27: {
-                        id: "b27",
-                        code: "Yacht B.2.7",
-                        building: "Yacht B",
-                        floor: 2,
-                        unit: 7,
-                        rooms: 3,
-                        usableArea: 68.5,
-                        totalArea: 95.2,
-                        balconyArea: 26.7,
-                        price: 1200,
-                        panoramas: {
-                            living: "assets/panoramas/b27/living.jpg",
-                            kitchen: "assets/panoramas/b27/kitchen.jpg",
-                            bedroom: "assets/panoramas/b27/bedroom.jpg",
-                            bathroom: "assets/panoramas/b27/bathroom.jpg",
-                            balcony: "assets/panoramas/b27/balcony.jpg"
-                        }
-                    },
-                    b29: {
-                        id: "b29",
-                        code: "Yacht B.2.9",
-                        building: "Yacht B",
-                        floor: 2,
-                        unit: 9,
-                        rooms: 2,
-                        usableArea: 55.8,
-                        totalArea: 72.3,
-                        balconyArea: 16.5,
-                        price: 1200,
-                        panoramas: {
-                            living: "assets/panoramas/b29/living.jpg",
-                            kitchen: "assets/panoramas/b29/kitchen.jpg",
-                            bedroom: "assets/panoramas/b29/bedroom.jpg",
-                            bathroom: "assets/panoramas/b29/bathroom.jpg",
-                            balcony: "assets/panoramas/b29/balcony.jpg"
-                        }
-                    },
-                    p26: {
-                        id: "p26",
-                        code: "Prima 26",
-                        building: "Prima",
-                        floor: 2,
-                        unit: 6,
-                        rooms: 4,
-                        usableArea: 85.3,
-                        totalArea: 115.7,
-                        balconyArea: 30.4,
-                        price: 1200,
-                        panoramas: {
-                            living: "assets/panoramas/p26/living.jpg",
-                            kitchen: "assets/panoramas/p26/kitchen.jpg",
-                            bedroom: "assets/panoramas/p26/bedroom.jpg",
-                            bathroom: "assets/panoramas/p26/bathroom.jpg",
-                            balcony: "assets/panoramas/p26/balcony.jpg"
-                        }
-                    },
-                    p21: {
-                        id: "p21",
-                        code: "Prima 21",
-                        building: "Prima",
-                        floor: 2,
-                        unit: 1,
-                        rooms: 3,
-                        usableArea: 72.1,
-                        totalArea: 98.4,
-                        balconyArea: 26.3,
-                        price: 1200,
-                        panoramas: {
-                            living: "assets/panoramas/p21/living.jpg",
-                            kitchen: "assets/panoramas/p21/kitchen.jpg",
-                            bedroom: "assets/panoramas/p21/bedroom.jpg",
-                            bathroom: "assets/panoramas/p21/bathroom.jpg",
-                            balcony: "assets/panoramas/p21/balcony.jpg"
-                        }
-                    },
-                    p51: {
-                        id: "p51",
-                        code: "Prima 51",
-                        building: "Prima",
-                        floor: 5,
-                        unit: 1,
-                        rooms: 5,
-                        usableArea: 110.5,
-                        totalArea: 145.8,
-                        balconyArea: 35.3,
-                        price: 1800,
-                        panoramas: {
-                            living: "assets/panoramas/p51/living.jpg",
-                            kitchen: "assets/panoramas/p51/kitchen.jpg",
-                            bedroom: "assets/panoramas/p51/bedroom.jpg",
-                            bathroom: "assets/panoramas/p51/bathroom.jpg",
-                            balcony: "assets/panoramas/p51/balcony.jpg"
-                        }
-                    }
-                };
+      let scene, camera, renderer, controls;
+      let isDragging = false;
+      let previousMousePosition = { x: 0, y: 0 };
 
-                // Camera settings
-                this.minFov = 40;
-                this.maxFov = 90;
-                this.defaultFov = 65;
-                this.currentZoom = this.defaultFov;
+      function init() {
+        // Scene setup
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('viewer').appendChild(renderer.domElement);
 
-                // Current state
-                this.currentApartment = 'b110';
-                this.currentRoom = 'living';
-                this.panoramaAspectRatio = 4/3;
+        // Create panorama sphere
+        const geometry = new THREE.CylinderGeometry(50, 50, 50, 60, 1, true);
+        geometry.scale(-1, 1, 1);
 
-                // Initialize viewer
-                this.init();
-            }
+        // Load panorama texture
+        const loader = new THREE.TextureLoader();
+        loader.load(
+          '/lovable-uploads/6922cab3-6a49-42cf-989d-469af0423578.png',
+          (texture) => {
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.repeat.x = -1;
+            const material = new THREE.MeshBasicMaterial({ map: texture });
+            const cylinder = new THREE.Mesh(geometry, material);
+            scene.add(cylinder);
+            console.log('Panorama loaded successfully');
+          },
+          undefined,
+          (error) => console.error('Error loading panorama:', error)
+        );
 
-            async init() {
-                this.initThreeJS();
-                this.initControls();
-                this.bindEvents();
-                await this.loadCurrentPanorama();
-                this.animate();
-            }
+        camera.position.set(0, 0, 0.1);
 
-            initThreeJS() {
-                this.scene = new THREE.Scene();
+        // Event listeners
+        document.addEventListener('mousedown', onMouseDown);
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+        document.addEventListener('wheel', onWheel);
+        window.addEventListener('resize', onWindowResize);
 
-                this.camera = new THREE.PerspectiveCamera(
-                    this.defaultFov,
-                    window.innerWidth / window.innerHeight,
-                    0.1,
-                    1000
-                );
-                this.camera.position.z = 0.1;
+        animate();
+      }
 
-                this.renderer = new THREE.WebGLRenderer({
-                    antialias: true,
-                    preserveDrawingBuffer: true
-                });
+      function onMouseDown(event) {
+        isDragging = true;
+        previousMousePosition = {
+          x: event.clientX,
+          y: event.clientY
+        };
+      }
 
-                this.renderer.setPixelRatio(window.devicePixelRatio);
-                this.renderer.setSize(window.innerWidth, window.innerHeight);
+      function onMouseMove(event) {
+        if (!isDragging) return;
 
-                document.getElementById('360-viewer').appendChild(this.renderer.domElement);
-            }
+        const deltaMove = {
+          x: event.clientX - previousMousePosition.x,
+          y: event.clientY - previousMousePosition.y
+        };
 
-            initControls() {
-                // Use the global OrbitControls instead of THREE.OrbitControls
-                this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-                this.controls.enableZoom = true;
-                this.controls.enablePan = false;
-                this.controls.rotateSpeed = 0.75;
-                this.controls.enableDamping = true;
-                this.controls.dampingFactor = 0.05;
-                this.controls.maxPolarAngle = Math.PI * 0.75;
-                this.controls.minPolarAngle = Math.PI * 0.25;
+        camera.rotation.y += deltaMove.x * 0.005;
+        camera.rotation.x += deltaMove.y * 0.005;
 
-                this.controls.touches = {
-                    ONE: THREE.TOUCH.ROTATE,
-                    TWO: THREE.TOUCH.DOLLY
-                };
-            }
+        previousMousePosition = {
+          x: event.clientX,
+          y: event.clientY
+        };
+      }
 
-            async loadCurrentPanorama() {
-                if (!this.scene || !this.currentApartment) return;
+      function onMouseUp() {
+        isDragging = false;
+      }
 
-                // Clear existing panorama
-                while (this.scene.children.length > 0) {
-                    this.scene.remove(this.scene.children[0]);
-                }
+      function onWheel(event) {
+        camera.position.z += event.deltaY * 0.001;
+        camera.position.z = Math.max(0.1, Math.min(2, camera.position.z));
+      }
 
-                const apartment = this.apartments[this.currentApartment];
-                if (!apartment?.panoramas) {
-                    console.error('Invalid apartment or missing panoramas');
-                    return;
-                }
+      function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      }
 
-                const panoramaUrl = apartment.panoramas[this.currentRoom];
-                if (!panoramaUrl) {
-                    console.error('Missing panorama URL for room:', this.currentRoom);
-                    return;
-                }
+      function animate() {
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+      }
 
-                const geometry = new THREE.SphereGeometry(500, 60, 40);
-                geometry.scale(-1, 1, 1);
+      // Control functions
+      function rotateLeft() {
+        camera.rotation.y += 0.1;
+      }
 
-                return new Promise((resolve, reject) => {
-                    const textureLoader = new THREE.TextureLoader();
-                    textureLoader.load(
-                        panoramaUrl,
-                        (texture) => {
-                            texture.minFilter = THREE.LinearFilter;
-                            texture.generateMipmaps = false;
+      function rotateRight() {
+        camera.rotation.y -= 0.1;
+      }
 
-                            const material = new THREE.MeshBasicMaterial({
-                                map:
+      function zoomIn() {
+        camera.position.z = Math.max(0.1, camera.position.z - 0.1);
+      }
+
+      function zoomOut() {
+        camera.position.z = Math.min(2, camera.position.z + 0.1);
+      }
+
+      // Initialize the viewer
+      init();
+    </script>
+  </body>
+</html>
