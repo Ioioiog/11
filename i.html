@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html>
+<head>
+<base href="https://responsabill.casino">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+<style>
+:root {
+  --primary: #2A9D8F;
+  --primary-light: #3FB5A6;
+  --primary-dark: #1F756A;
+  --secondary: #E9C46A;
+  --background: #264653;
+  --text: #F4F1DE;
+  --accent: #E76F51;
+  --danger: #E63946;
+  --success: #2ECC71;
+  --warning: #F4A261;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--background);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.chat-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  grid-template-rows: auto 1fr;
+  gap: 1rem;
+  height: 100vh;
+}
+
+.sidebar {
+  grid-column: 1;
+  grid-row: 1 / -1;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.progress-section {
+  margin-bottom: 2rem;
+}
+
+.progress-container {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.progress-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.5rem;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--secondary);
+}
+
+.progress-bar {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--primary);
+  transition: width 0.5s ease;
+  border-radius: 4px;
+}
+
+.main-content {
+  grid-column: 2;
+  grid-row: 1 / -1;
+  display: flex;
+  flex-direction: column;
+}
+
+.tools-panel {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.tool-card {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tool-card:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.tool-icon {
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+}
+
+.tool-card:hover .tool-icon {
+  transform: scale(1.1);
+}
+
+.chat-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+.message {
+  max-width: 80%;
+  margin: 0.5rem 0;
+  padding: 1rem;
+  border-radius: 12px;
+  position: relative;
+  animation: fadeIn 0.3s ease;
+}
+
+.message.user-message {
+  background: var(--primary);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+
+.message.ai-message {
+  background: var(--secondary);
+  color: var(--background);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+
+.message-time {
+  font-size: 0.75rem;
+  opacity: 0.7;
+  margin-top: 0.25rem;
+  text-align: right;
+}
+
+.input-container {
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.input-wrapper {
+  flex: 1;
+  position: relative;
+}
+
+.chat-input {
+  width: 100%;
+  padding: 1rem;
+  padding-right: 3rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: var(--text);
+  resize: none;
+  min-height: 60px;
+  max-height: 150px;
+  transition: all 0.3s ease;
+}
+
+.chat-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.input-actions {
+  position: absolute;
+  right: 0.5rem;
+  bottom: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-button {
+  background: none;
+  border: none;
+  color: var(--text);
+  padding: 0.5rem;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.action-button:hover {
+  opacity: 1;
+}
+
+.send-button {
+  padding: 1rem 2rem;
+  background: var(--primary);
+  border: none;
+  border-radius: 8px;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.send-button:hover {
+  background: var(--primary-light);
+  transform: translateY(-1px);
+}
+
+.send-button:active {
+  background: var(--primary-dark);
+  transform: translateY(0);
+}
+
+.mood-tracker {
+  margin-top: 1rem;
+}
+
+.mood-buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.mood-button {
+  flex: 1;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.mood-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.emergency-button {
+  background: var(--danger);
+  color: white;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 8px;
+  margin-top: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.emergency-button:hover {
+  background: #ff4757;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.breathing-exercise {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.9);
+  padding: 2rem;
+  border-radius: 16px;
+  display: none;
+  text-align: center;
+}
+
+.breathing-circle {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 2rem auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.breathing-active {
+  animation: breathe 8s infinite ease-in-out;
+}
+
+@keyframes breathe {
+  0% { transform: scale(1); background: rgba(255, 255, 255, 0.1); }
+  40% { transform: scale(1.4); background: rgba(42, 157, 143, 0.3); }
+  60% { transform: scale(1.4); background: rgba(42, 157, 143, 0.3); }
+  100% { transform: scale(1); background: rgba(255, 255, 255, 0.1); }
+}
+
+.tooltip {
+  position: relative;
+}
+
+.tooltip:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.5rem;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 4px;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  z-index: 10;
+}
+</style>
+</head>
+<body>
+
+<div class="chat-container">
+  <aside class="sidebar">
+    <div class="progress-section">
+      <h3>Recovery Progress</h3>
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 0%"></div>
+        </div>
+        <p id="streak-counter">0 days gambling-free</p>
+      </div>
+      
+      <div class="progress-stats">
+        <div class="stat-card">
+          <div class="stat-value" id="savings">$0</div>
+          <div class="stat-label">Saved</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="urgeScore">0</div>
+          <div class="stat-label">Urge Score</div>
+        </div>
+      </div>
+      
+      <div class="mood-tracker">
+        <h4>Daily Mood Check</h4>
+        <div class="mood-buttons">
+          <button class="mood-button" data-mood="1">😔</button>
+          <button class="mood-button" data-mood="2">😐</button>
+          <button class="mood-button" data-mood="3">🙂</button>
+          <button class="mood-button" data-mood="4">😊</button>
+        </div>
+      </div>
+    </div>
+
+    <button class="emergency-button">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12" y2="16"></line>
+      </svg>
+      Emergency Support
+    </button>
+  </aside>
+
+  <main class="main-content">
+    <div class="tools-panel">
+      <h3>Recovery Tools</h3>
+      <div class="tools-grid">
+        <div class="tool-card" data-tool="breathing">
+          <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 8v8"></path>
+            <path d="M8 12h8"></path>
+          </svg>
+          <h4>Breathing Exercise</h4>
+        </div>
+        
+        <div class="tool-card" data-tool="meditation">
+          <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2a10 10 0 0 1 10 10"></path>
+            <path d="M12 12l9-3"></path>
+            <circle cx="12" cy="12" r="4"></circle>
+          </svg>
+          <h4>Mindfulness</h4>
+        </div>
+        
+        <div class="tool-card" data-tool="journal">
+          <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+          <h4>Journal</h4>
+        </div>
+        
+        <div class="tool-card" data-tool="support">
+          <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          <h4>Support Groups</h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-section">
+      <div class="chat-messages" id="chatMessages"></div>
+      
+      <div class="input-container">
+        <div class="input-wrapper">
+          <textarea 
+            class="chat-input" 
+            id="userInput" 
+            placeholder="Type your message... (Shift + Enter for new line)"
+            rows="1"
+          ></textarea>
+          <div class="input-actions">
+            <button class="action-button tooltip" data-tooltip="Quick responses">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+            </button>
+            <button class="action-button tooltip" data-tooltip="Resources">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <button class="send-button" id="sendButton">Send</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="breathing-exercise" id="breathingExercise">
+  <h2>Breathing Exercise</h2>
+  <p id="breathingInstruction">Breathe in...</p>
+  <div class="breathing-circle" id="breathingCircle">
+    <span id="breathingTimer">4</span>
+  </div>
+  <button class="send-button" onclick="stopBreathingExercise()">End Exercise</button>
+</div>
+
+<script>
+// State management
+const state = {
+  messageHistory: [],
+  recoveryStage: 'initial',
+  riskLevel: 0,
+  daysClean: 0,
+  savings: 0,
+  urgeScore: 0,
+  moodHistory: [],
+  isBreathing: false,
+  isMeditating: false,
+  lastActive: Date.now(),
+  quickResponses: [
+    "I'm feeling triggered right now",
+    "I need help with an urge",
+    "I want to share a success",
+    "I'm looking for resources"
+  ]
+};
+
+// Enhanced message handling
+class MessageHandler {
+  static addMessage(content, isUser = false) {
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('message', 'animate__animated', 'animate__fadeIn');
+    messageElement.classList.add(isUser ? 'user-message' : 'ai-message');
+    
+    const messageContent = document.createElement('div');
+    messageContent.textContent = content;
+    
+    const timeStamp = document.createElement('div');
+    timeStamp.classList.add('message-time');
+    timeStamp.textContent = new Date().toLocaleTimeString();
+    
+    messageElement.appendChild(messageContent);
+    messageElement.appendChild(timeStamp);
+    
+    const chatMessages = document.getElementById('chatMessages');
+    chatMessages.appendChild(messageElement);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    state.messageHistory.push({
+      role: isUser ? 'user' : 'assistant',
+      content,
+      timestamp: Date.now()
+    });
+  }
+}
+
+// Progress tracking system
+class ProgressTracker {
+  static update() {
+    const progressFill = document.querySelector('.progress-fill');
+    const progress = (state.daysClean / 90) * 100;
+    progressFill.style.width = `${Math.min(progress, 100)}%`;
+    
+    document.getElementById('streak-counter').textContent = 
+      `${state.daysClean} ${state.daysClean === 1 ? 'day' : 'days'} gambling-free`;
+    
+    document.getElementById('savings').textContent = 
+      `$${state.savings.toLocaleString()}`;
+    
+    document.getElementById('urgeScore').textContent = 
+      state.urgeScore.toString();
+  }
+  
+  static addDay() {
+    state.daysClean++;
+    state.savings += Math.floor(Math.random() * 50) + 50; // Simulated savings
+    this.update();
+  }
+}
+
+// Therapeutic tools implementation
+class TherapeuticTools {
+  static startBreathing() {
+    if (state.isBreathing) return;
+    
+    const exercise = document.getElementById('breathingExercise');
+    const circle = document.getElementById('breathingCircle');
+    const instruction = document.getElementById('breathingInstruction');
+    const timer = document.getElementById('breathingTimer');
+    
+    exercise.style.display = 'block';
+    circle.classList.add('breathing-active');
+    
+    state.isBreathing = true;
+    
+    const breathingCycle = {
+      inhale: 4,
+      hold: 7,
+      exhale: 8,
+      rest: 2
+    };
+    
+    function updateBreathing(phase, timeLeft) {
+      instruction.textContent = phase;
+      timer.textContent = timeLeft;
+    }
+    
+    function runBreathingCycle() {
+      let currentPhase = 'inhale';
+      let timeLeft = breathingCycle[currentPhase];
+      
+      const interval = setInterval(() => {
+        if (!state.isBreathing) {
+          clearInterval(interval);
+          return;
+        }
+        
+        timeLeft--;
+        updateBreathing(`${currentPhase}...`, timeLeft);
+        
+        if (timeLeft === 0) {
+          switch (currentPhase) {
+            case 'inhale':
+              currentPhase = 'hold';
+              break;
+            case 'hold':
+              currentPhase = 'exhale';
+              break;
+            case 'exhale':
+              currentPhase = 'rest';
+              break;
+            case 'rest':
+              currentPhase = 'inhale';
+              break;
+          }
+          timeLeft = breathingCycle[currentPhase];
+        }
+      }, 1000);
+    }
+    
+    runBreathingCycle();
+  }
+  
+  static stopBreathing() {
+    state.isBreathing = false;
+    const exercise = document.getElementById('breathingExercise');
+    const circle = document.getElementById('breathingCircle');
+    
+    exercise.style.display = 'none';
+    circle.classList.remove('breathing-active');
+  }
+}
+
+// Enhanced input handling
+class InputHandler {
+  static init() {
+    const input = document.getElementById('userInput');
+    const sendButton = document.getElementById('sendButton');
+    
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        this.sendMessage();
+      }
+    });
+    
+    input.addEventListener('input', () => {
+      input.style.height = 'auto';
+      input.style.height = input.scrollHeight + 'px';
+    });
+    
+    sendButton.addEventListener('click', () => this.sendMessage());
+  }
+  
+  static async sendMessage() {
+    const input = document.getElementById('userInput');
+    const message = input.value.trim();
+    
+    if (!message) return;
+    
+    try {
+      input.value = '';
+      input.style.height = 'auto';
+      
+      MessageHandler.addMessage(message, true);
+      
+      // Simulate AI processing
+      const response = await this.generateResponse(message);
+      MessageHandler.addMessage(response);
+      
+      // Update progress (demo purposes)
+      if (Math.random() > 0.7) {
+        ProgressTracker.addDay();
+      }
+      
+    } catch (error) {
+      console.error('Error sending message:', error);
+      MessageHandler.addMessage(
+        "I'm having trouble right now. Please try again or contact support if you need immediate assistance."
+      );
+    }
+  }
+  
+  static async generateResponse(message) {
+    // Simulate response generation with basic pattern matching
+    const lowercaseMessage = message.toLowerCase();
+    
+    if (lowercaseMessage.includes('urge') || lowercaseMessage.includes('tempted')) {
+      state.urgeScore = Math.min(state.urgeScore + 1, 10);
+      ProgressTracker.update();
+      return `I understand you're experiencing an urge right now. Remember, urges are temporary and typically pass within 15-30 minutes. Would you like to try a breathing exercise or discuss some coping strategies?`;
+    }
+    
+    if (lowercaseMessage.includes('anxiety') || lowercaseMessage.includes('stress')) {
+      return `I hear that you're feeling anxious. Let's work through this together. Would you like to try a grounding exercise or talk about what's causing these feelings?`;
+    }
+    
+    if (lowercaseMessage.includes('success') || lowercaseMessage.includes('proud')) {
+      return `That's wonderful! Celebrating these victories, big or small, is so important for recovery. Would you like to add this to your recovery journal?`;
+    }
+    
+    // Default response
+    return `I'm here to support you. Can you tell me more about what's on your mind?`;
+  }
+}
+
+// Initialize application
+document.addEventListener('DOMContentLoaded', () => {
+  InputHandler.init();
+  ProgressTracker.update();
+  
+  MessageHandler.addMessage(
+    "Hello! I'm here to support your recovery journey. How are you feeling today?"
+  );
+  
+  // Initialize tool buttons
+  document.querySelectorAll('.tool-card').forEach(tool => {
+    tool.addEventListener('click', () => {
+      switch (tool.dataset.tool) {
+        case 'breathing':
+          TherapeuticTools.startBreathing();
+          break;
+        case 'meditation':
+          // Implement meditation
+          break;
+        case 'journal':
+          // Implement journaling
+          break;
+        case 'support':
+          // Implement support groups
+          break;
+      }
+    });
+  });
+  
+  // Initialize mood tracking
+  document.querySelectorAll('.mood-button').forEach(button => {
+    button.addEventListener('click', () => {
+      const mood = parseInt(button.dataset.mood);
+      state.moodHistory.push({
+        mood,
+        timestamp: Date.now()
+      });
+      MessageHandler.addMessage(`Thank you for sharing your mood. Would you like to talk about what's influencing your feelings today?`);
+    });
+  });
+});
+</script>
+
+</body>
+</html>
