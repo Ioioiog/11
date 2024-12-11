@@ -252,8 +252,9 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.128.0/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/controls/OrbitControls.js"></script>
+</head>
 <script>
 class VirtualTour {
     constructor() {
@@ -353,8 +354,11 @@ class VirtualTour {
         document.getElementById('viewer-container').appendChild(this.renderer.domElement);
     }
 
-    initControls() {
-        this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+initControls() {
+        // Change this line to use proper OrbitControls constructor
+        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+        
+        // Rest of the controls configuration remains the same
         this.controls.enableZoom = true;
         this.controls.enablePan = false;
         this.controls.rotateSpeed = 0.75;
@@ -363,7 +367,6 @@ class VirtualTour {
         this.controls.maxPolarAngle = Math.PI * 0.75;
         this.controls.minPolarAngle = Math.PI * 0.25;
     }
-
     async loadCurrentPanorama() {
         if (!this.scene) return;
         
