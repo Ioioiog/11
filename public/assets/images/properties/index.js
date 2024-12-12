@@ -9,6 +9,7 @@ import b110_1 from './b110/1.jpg';
 import b110_2 from './b110/2.jpg';
 import b110_3 from './b110/3.jpg';
 import b110_4 from './b110/4.jpg';
+import b110_5 from './b110/5.jpg';
 
 import b27_1 from './b27/1.jpg';
 import b27_2 from './b27/2.jpg';
