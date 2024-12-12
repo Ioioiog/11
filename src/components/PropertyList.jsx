@@ -215,51 +215,63 @@ export default function PropertyList() {
               </div>
 
               <div className="p-6">
-                <h3 className="text-xl font-bold text-brand-dark mb-2">{property.title}</h3>
-                <div className="flex justify-between items-center mb-4">
-                  <div className="text-brand-gray-medium">
-                    {property.details.rooms} camere • {property.details.area} mp
-                  </div>
-                  <div className="text-2xl font-bold text-brand-orange">
-                    {property.price}€
-                  </div>
-                </div>
+              <h3 className="text-xl font-bold text-brand-dark mb-2">{property.title}</h3>
+<div className="flex justify-between items-center mb-4">
+  <div className="text-brand-gray-medium">
+    {property.details.rooms} camere • {property.details.area} mp
+  </div>
+  <div className="text-2xl font-bold text-brand-orange">
+    {property.price}€
+  </div>
+</div>
 
-                <p className="text-brand-gray-medium mb-4 line-clamp-2">
-                  {property.description}
-                </p>
+<p className="text-brand-gray-medium mb-4 line-clamp-2">
+  {property.description}
+</p>
 
-                {property.status === propertyStatuses.AVAILABLE ? (
-                  <button
-                    onClick={() => {
-                      setSelectedProperty(property);
-                      setShowModal(true);
-                    }}
-                    className="w-full px-4 py-2 bg-brand-orange text-white rounded-md 
-                      hover:bg-brand-orange-dark transition-colors"
-                  >
-                    Vezi detalii
-                  </button>
-                ) : (
-                  <div className="text-center text-brand-gray-medium text-sm">
-                    Disponibil din: {property.availableFrom}
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
+{property.status === propertyStatuses.AVAILABLE ? (
+  <div className="flex space-x-2">
+    <button
+      onClick={() => {
+        setSelectedProperty(property);
+        setShowModal(true);
+      }}
+      className="w-full px-4 py-2 bg-brand-orange text-white rounded-md 
+        hover:bg-brand-orange-dark transition-colors"
+    >
+      Vezi detalii
+    </button>
+    <button
+      onClick={() => {
+        const url = `public/assets/360/360-${property.id}.html`; 
+        window.open(url, '_blank');
+      }}
+      className="w-full px-4 py-2 bg-brand-blue text-white rounded-md 
+        hover:bg-brand-blue-dark transition-colors"
+    >
+      360 View
+    </button>
+  </div>
+) : (
+  <div className="text-center text-brand-gray-medium text-sm">
+    Disponibil din: {property.availableFrom}
+  </div>
+)}
+</div>
+</div>
+))}
+</div>
 
-        {filteredProperties.length === 0 && (
+{filteredProperties.length === 0 && (
           <div className="text-center py-12">
-            <h3 className="text-xl font-semibold text-brand-dark mb-2">
-              Nu am găsit proprietăți care să corespundă criteriilor tale
-            </h3>
-            <p className="text-brand-gray-medium mb-4">
-              Încearcă să ajustezi filtrele sau să ștergi termenul de căutare
-            </p>
-            <button
-              onClick={() => {
+        <h3 className="text-xl font-semibold text-brand-dark mb-2">
+          Nu am găsit proprietăți care să corespundă criteriilor tale
+        </h3>
+        <p className="text-brand-gray-medium mb-4">
+          Încearcă să ajustezi filtrele sau să ștergi termenul de căutare
+        </p>
+        <button
+          onClick={() => {
                 setFilters({
                   status: 'all',
                   rooms: 'all',
