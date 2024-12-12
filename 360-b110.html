@@ -2,39 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>360° Panorama Viewer</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    html, body {
+    body {
       margin: 0;
       font-family: 'Inter', sans-serif;
-      position: fixed;
       overflow: hidden;
-      touch-action: none;
-      -webkit-overflow-scrolling: none;
-      overscroll-behavior: none;
-      -webkit-tap-highlight-color: transparent;
-      width: 100%;
-      height: 100%;
     }
     
     .viewer-container {
       position: fixed;
       inset: 0;
       background: linear-gradient(to bottom, #000000, #1a1a1a);
-      touch-action: none;
-      -webkit-user-select: none;
-      user-select: none;
     }
     
     .panel {
       background: rgba(255, 255, 255, 0.2);
       backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
       border-radius: 1rem;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
       color: white;
@@ -138,20 +125,13 @@
       padding: 0.75rem;
       display: flex;
       gap: 0.5rem;
-      width: 90%;
-      justify-content: center;
-      flex-wrap: wrap;
-      z-index: 1000;
     }
 
     .btn {
-      min-height: 44px;
-      min-width: 44px;
       padding: 0.75rem 1.5rem;
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(255, 255, 255, 0.2);
       backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 0.5rem;
       font-family: 'Inter', sans-serif;
       font-size: 0.95rem;
@@ -162,13 +142,10 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      white-space: nowrap;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
     }
 
     .btn:hover {
-      background: rgba(0, 0, 0, 0.7);
-      border-color: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.3);
       transform: translateY(-1px);
     }
 
@@ -226,56 +203,6 @@
       bottom: 2rem;
       right: 2rem;
     }
-
-    @media (max-width: 768px) {
-      .control-panel {
-        padding: 0.5rem;
-        gap: 0.5rem;
-        bottom: 1rem;
-        background: rgba(0, 0, 0, 0.4);
-      }
-      
-      .btn {
-        padding: 0.6rem 1rem;
-        font-size: 1rem;
-        background: rgba(0, 0, 0, 0.6);
-        flex: 0 1 auto;
-      }
-      
-      .btn svg {
-        width: 1.1em;
-        height: 1.1em;
-      }
-      
-      .help-panel, .image-info-panel {
-        max-width: 85vw;
-        font-size: 0.9rem;
-      }
-      
-      .metadata {
-        font-size: 0.8rem;
-      }
-
-      .tooltip {
-        display: none;
-      }
-
-      .fullscreen-btn {
-        bottom: 1rem;
-        right: 1rem;
-      }
-    }
-
-    @media (max-height: 500px) {
-      .control-panel {
-        bottom: 0.5rem;
-      }
-      
-      .btn {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.9rem;
-      }
-    }
   </style>
 </head>
 <body>
@@ -286,12 +213,12 @@
     <span>Loading panorama...</span>
   </div>
   
-  <div id="helpPanel" class="help-panel panel hidden">
+  <div id="helpPanel" class="help-panel panel">
     <h2>360° Panorama View</h2>
-    <p>Click and drag or swipe to look around. Pinch to zoom in and out. Double-tap to toggle fullscreen mode.</p>
+    <p>Click and drag to look around. Use the mouse wheel or pinch gestures to zoom in and out. Double-click to toggle fullscreen mode.</p>
   </div>
 
-  <div id="imageInfoPanel" class="image-info-panel panel hidden">
+  <div id="imageInfoPanel" class="image-info-panel panel">
     <h3>About This Image</h3>
     <p>B110 Panorama View</p>
     <p>This panoramic view showcases the interior architecture and design of Building 110, capturing its unique spatial characteristics and architectural details in a full 360-degree perspective.</p>
@@ -330,7 +257,7 @@
         <path d="M3 12a9 9 0 019-9 9.75 9.75 0 017.071 3.172L21 8"/>
         <path d="M21 3v5h-5"/>
       </svg>
-      Reset
+      Reset View
       <span class="tooltip">Reset camera position</span>
     </button>
 
@@ -363,7 +290,7 @@
   </button>
 
   <div id="controlsHint" class="controls-hint">
-    Click and drag or swipe to look around
+    Click and drag to look around
   </div>
 
   <script>
@@ -390,7 +317,7 @@
       
       const loader = new THREE.TextureLoader();
       loader.load(
-        'assets/360/360-b110.jpg',
+        'assets/360/b110.jpg',
         (texture) => {
           texture.wrapS = THREE.RepeatWrapping;
           texture.repeat.x = -1;
@@ -425,11 +352,7 @@
       let previousMousePosition = { x: 0, y: 0 };
       let momentum = { x: 0, y: 0 };
       const friction = 0.95;
-      let lastTouchX = 0;
-      let lastTouchY = 0;
-      let touchStartDistance = 0;
       
-      // Mouse controls
       document.addEventListener('mousedown', (e) => {
         isDragging = true;
         previousMousePosition = {
@@ -467,56 +390,6 @@
       document.addEventListener('mouseup', () => {
         isDragging = false;
       });
-
-      // Touch controls
-      document.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        if (e.touches.length === 1) {
-          isDragging = true;
-          lastTouchX = e.touches[0].pageX;
-          lastTouchY = e.touches[0].pageY;
-          if (isFirstInteraction) {
-            hideControlsHint();
-          }
-        } else if (e.touches.length === 2) {
-          touchStartDistance = getTouchDistance(e.touches);
-        }
-      }, { passive: false });
-
-      document.addEventListener('touchmove', (e) => {
-        e.preventDefault();
-        if (e.touches.length === 1 && isDragging) {
-          const touchX = e.touches[0].pageX;
-          const touchY = e.touches[0].pageY;
-          
-          const deltaMove = {
-            x: touchX - lastTouchX,
-            y: touchY - lastTouchY
-          };
-          
-          momentum = {
-            x: deltaMove.x * 0.005,
-            y: deltaMove.y * 0.005
-          };
-          
-          camera.rotation.y += momentum.x;
-          camera.rotation.x += momentum.y;
-          camera.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, camera.rotation.x));
-          
-          lastTouchX = touchX;
-          lastTouchY = touchY;
-        } else if (e.touches.length === 2) {
-          const currentDistance = getTouchDistance(e.touches);
-          const delta = (touchStartDistance - currentDistance) * 0.01;
-          const newZ = camera.position.z + delta;
-          camera.position.z = Math.max(0.1, Math.min(2, newZ));
-          touchStartDistance = currentDistance;
-        }
-      }, { passive: false });
-
-      document.addEventListener('touchend', () => {
-        isDragging = false;
-      });
       
       function updateMomentum() {
         if (!isDragging && (Math.abs(momentum.x) > 0.001 || Math.abs(momentum.y) > 0.001)) {
@@ -536,7 +409,25 @@
         const zoomSpeed = 0.0007;
         const newZ = camera.position.z + e.deltaY * zoomSpeed;
         camera.position.z = Math.max(0.1, Math.min(2, newZ));
-      }, { passive: false });
+      });
+
+      // Touch controls for mobile
+      let touchStartDistance = 0;
+      document.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 2) {
+          touchStartDistance = getTouchDistance(e.touches);
+        }
+      });
+
+      document.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 2) {
+          const currentDistance = getTouchDistance(e.touches);
+          const delta = (touchStartDistance - currentDistance) * 0.01;
+          const newZ = camera.position.z + delta;
+          camera.position.z = Math.max(0.1, Math.min(2, newZ));
+          touchStartDistance = currentDistance;
+        }
+      });
     }
 
     function getTouchDistance(touches) {
@@ -571,7 +462,7 @@
 
     // Button handlers
     document.getElementById('backButton').addEventListener('click', () => {
-      window.location.href = 'https://apartamentdelux.ro';
+      window.history.back();
     });
 
     document.getElementById('resetButton').addEventListener('click', () => {
@@ -595,20 +486,13 @@
       }
     });
 
-    // Double tap detection for mobile
-    let lastTap = 0;
-    document.addEventListener('touchend', (e) => {
-      const currentTime = new Date().getTime();
-      const tapLength = currentTime - lastTap;
-      if (tapLength < 500 && tapLength > 0) {
-        if (!document.fullscreenElement) {
-          document.documentElement.requestFullscreen();
-        } else {
-          document.exitFullscreen();
-        }
-        e.preventDefault();
+    // Double click for fullscreen
+    document.addEventListener('dblclick', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        document.exitFullscreen();
       }
-      lastTap = currentTime;
     });
 
     // Initialize and start animation
