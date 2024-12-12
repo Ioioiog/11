@@ -213,12 +213,12 @@
     <span>Loading panorama...</span>
   </div>
   
-  <div id="helpPanel" class="help-panel panel">
+  <div id="helpPanel" class="help-panel panel hidden">
     <h2>360° Panorama View</h2>
     <p>Click and drag to look around. Use the mouse wheel or pinch gestures to zoom in and out. Double-click to toggle fullscreen mode.</p>
   </div>
 
-  <div id="imageInfoPanel" class="image-info-panel panel">
+  <div id="imageInfoPanel" class="image-info-panel panel hidden">
     <h3>About This Image</h3>
     <p>B110 Panorama View</p>
     <p>This panoramic view showcases the interior architecture and design of Building 110, capturing its unique spatial characteristics and architectural details in a full 360-degree perspective.</p>
@@ -462,7 +462,7 @@
 
     // Button handlers
     document.getElementById('backButton').addEventListener('click', () => {
-      window.history.back();
+      window.location.href = 'https://apartamentdelux.ro';
     });
 
     document.getElementById('resetButton').addEventListener('click', () => {
