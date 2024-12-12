@@ -191,7 +191,7 @@ export const propertyData = [
       address: "Str. Fabrica de Glucoză, București",
       complex: "Prima Vista"
     },
-    status: propertyStatuses.AVAILABLE,
+    status: propertyStatuses.RENTED,
     rentPeriod: "12 luni",
     availableFrom: "Imediat"
   },
@@ -225,8 +225,8 @@ export const propertyData = [
       address: "Str. Fabrica de Glucoză, București",
       complex: "Prima Vista"
     },
-    status: propertyStatuses.AVAILABLE,
-    rentPeriod: "12 luni",
+    status: propertyStatuses.RENTED,
+    rentPeriod: "24 luni",
     availableFrom: "Imediat"
   }
 ];
