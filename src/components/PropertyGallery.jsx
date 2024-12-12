@@ -60,6 +60,7 @@ export default function PropertyGallery({ isOpen, onClose, property }) {
           </button>
 
           <img
+            src={images[currentIndex]}
             alt={`${property.title} - Imagine ${currentIndex + 1}`}
             className="max-h-[70vh] max-w-[90vw] object-contain rounded-lg"
           />
@@ -88,7 +89,7 @@ export default function PropertyGallery({ isOpen, onClose, property }) {
                   }`}
               >
                 <img
-                  src={/assets/images/properties/${property.id}/thumbnail-${index + 1}.jpg}
+                  src={image}
                   alt={`Miniatură ${index + 1}`}
                   className="w-full h-full object-cover"
                 />
